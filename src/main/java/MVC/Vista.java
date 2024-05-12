@@ -32,4 +32,15 @@ public class Vista {
     private JButton modificarButton;
     private JButton eliminarButton;
     private JList listTeam;
+    private JButton btnImportLogo;
+    private JTextField txtTournamentName;
+    private JComboBox comboPrize;
+    private JComboBox comboBox1;
+    private JButton btnAddTeam;
+    private JButton btnDeleteTeam;
+    private JList listTeamTournament;
+    private JButton btnAddTournament;
+    private JButton btnModTournament;
+    private JButton btnDelTournametn;
+    private JList listTournament;
 }
