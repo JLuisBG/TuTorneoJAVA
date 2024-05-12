@@ -21,4 +21,15 @@ public class Vista {
     private JPasswordField passFieldPlayer;
     private JRadioButton btnEntryFeePaid;
     private DatePicker datePickerPlayerBirth;
+    private JTextField txtTeamName;
+    private JComboBox comboPlayyes;
+    private JButton btnAddPlayerTeam;
+    private JList listPlayerTeam;
+    private JList list2;
+    private JButton añadirJugadorButton;
+    private JButton eliminarJugadorButton;
+    private JButton añadirButton;
+    private JButton modificarButton;
+    private JButton eliminarButton;
+    private JList listTeam;
 }
