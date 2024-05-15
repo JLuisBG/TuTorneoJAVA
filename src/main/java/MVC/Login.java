@@ -10,24 +10,29 @@ public class Login extends JFrame {
     JPasswordField passfieldLogin;
     JButton btnLogin;
     JLabel logo;
+    JLabel Pass;
 
     JMenuItem conexionItem;
     JMenuItem salirItem;
 
     public  Login(){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        this.setSize(new Dimension(this.getWidth()+800, this.getHeight()-200));
+        int width = screenSize.width * 2 / 3; // two-thirds of the screen width
+        int height = screenSize.height * 2 / 3; // two-thirds of the screen height
+        this.setSize(new Dimension(width, height));
+        Email.setFont(new Font(Pass.getName(), Font.PLAIN, 20));
+        Pass.setFont(new Font(Pass.getName(), Font.PLAIN, 20));
         this.setLocationRelativeTo(null);
         crearMenu();
+        //setLogo();
     }
     private void crearMenu() {
         JMenuBar barra = new JMenuBar();
         JMenu menu = new JMenu("Archivo");
-        conexionItem = new JMenuItem("Conectar");
-        conexionItem.setActionCommand("Conectar");
         salirItem = new JMenuItem("Salir");
         salirItem.setActionCommand("Salir");
         menu.add(conexionItem);
@@ -36,11 +41,12 @@ public class Login extends JFrame {
         this.setJMenuBar(barra);
     }
 
-    private void setLogo() {
+    /*private void setLogo() {
         ImageIcon icon = new ImageIcon("src/main/resources/logo.png");
         Image img = icon.getImage();
-        Image newImg = img.getScaledInstance(logo.getWidth(), logo.getHeight(), Image.SCALE_SMOOTH);
+        int width = this.getWidth()/4 ;
+        Image newImg = img.getScaledInstance(width, this.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon newImc = new ImageIcon(newImg);
         logo.setIcon(newImc);
-    }
+    }*/
 }
