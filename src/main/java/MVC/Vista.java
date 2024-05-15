@@ -8,6 +8,7 @@ import java.awt.*;
 public class Vista extends JFrame{
     private JTabbedPane tabbedPane1;
     private JFrame frame;
+    private JPanel panel1;
     //
     public JTextField txtPrizeName;
     public JTextField txtPrizeAmount;
@@ -46,7 +47,8 @@ public class Vista extends JFrame{
     public JButton btnModTournament;
     public JButton btnDelTournametn;
     public JList listTournament;
-//
+
+    //
     DefaultListModel dlmPrizes;
     DefaultListModel dlmPlayers;
     DefaultListModel dlmTeams;
@@ -70,21 +72,16 @@ public class Vista extends JFrame{
 
     public Vista() {
         createModels();
-        show();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setContentPane(panel1);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+        this.setVisible(true);
+        int width = screenSize.width * 2 / 3; // two-thirds of the screen width
+        int height = screenSize.height * 2 / 3; // two-thirds of the screen height
+        this.setSize(new Dimension(width, height));
+        this.setLocationRelativeTo(null);
         crearMenu();
-    }
-
-    /**
-     * Método que muestra la ventana
-     */
-    public void show() {
-        frame = new JFrame("TuTorneo");
-        frame.setContentPane(new Vista().tabbedPane1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(new Dimension(800, 430));
-        frame.setLocationRelativeTo(null);
     }
     private void crearMenu() {
         JMenuBar barra = new JMenuBar();
