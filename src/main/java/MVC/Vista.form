@@ -258,7 +258,7 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="a231f" class="javax.swing.JButton" binding="añadirJugadorButton" default-binding="true">
+              <component id="a231f" class="javax.swing.JButton" binding="btnAddPlayerTeam">
                 <constraints>
                   <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
@@ -270,7 +270,7 @@
                   <text value="Añadir Jugador"/>
                 </properties>
               </component>
-              <component id="b71a4" class="javax.swing.JButton" binding="eliminarJugadorButton" default-binding="true">
+              <component id="b71a4" class="javax.swing.JButton" binding="btnDelPlayerTeam">
                 <constraints>
                   <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
@@ -282,7 +282,7 @@
                   <text value="Eliminar Jugador"/>
                 </properties>
               </component>
-              <component id="ddc3a" class="javax.swing.JButton" binding="añadirButton" default-binding="true">
+              <component id="ddc3a" class="javax.swing.JButton" binding="btnAddTeam">
                 <constraints>
                   <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
@@ -294,7 +294,7 @@
                   <text value="Añadir"/>
                 </properties>
               </component>
-              <component id="60fe1" class="javax.swing.JButton" binding="modificarButton" default-binding="true">
+              <component id="60fe1" class="javax.swing.JButton" binding="btnModTeam">
                 <constraints>
                   <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
@@ -306,7 +306,7 @@
                   <text value="Modificar"/>
                 </properties>
               </component>
-              <component id="9dd2c" class="javax.swing.JButton" binding="eliminarButton" default-binding="true">
+              <component id="9dd2c" class="javax.swing.JButton" binding="btnDelTeam">
                 <constraints>
                   <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
@@ -648,7 +648,7 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="44034" class="javax.swing.JButton" binding="btnAddTeam">
+              <component id="44034" class="javax.swing.JButton" binding="btnAddTeamTournament">
                 <constraints>
                   <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
@@ -660,7 +660,7 @@
                   <text value="Añadir equipo"/>
                 </properties>
               </component>
-              <component id="8d303" class="javax.swing.JButton" binding="btnDeleteTeam">
+              <component id="8d303" class="javax.swing.JButton" binding="btnDeleteTeamTournament">
                 <constraints>
                   <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>

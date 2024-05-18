@@ -28,27 +28,27 @@ public class Vista extends JFrame {
     public JComboBox comboPlayyes;
     public JList listPlayerTeam;
     public JList list2;
-    public JButton añadirJugadorButton;
-    public JButton eliminarJugadorButton;
-    public JButton añadirButton;
-    public JButton modificarButton;
-    public JButton eliminarButton;
+    public JButton btnAddPlayerTeam;
+    public JButton btnDelPlayerTeam;
+    public JButton btnAddTeam;
+    public JButton btnModTeam;
+    public JButton btnDelTeam;
     public JList listTeam;
     public JButton btnImportLogo;
     public JTextField txtTournamentName;
     public JComboBox comboPrize;
     public JComboBox comboTeam;
-    public JButton btnAddTeam;
-    public JButton btnDeleteTeam;
+    public JButton btnAddTeamTournament;
+    public JButton btnDeleteTeamTournament;
     public JList listTeamTournament;
     public JButton btnAddTournament;
     public JButton btnModTournament;
     public JButton btnDelTournametn;
     public JList listTournament;
-    private JList listPlayer;
-    private JButton btnDelPlayer;
-    private JButton btnAddPlayer;
-    private JButton btnModPlayer;
+    public JList listPlayer;
+    public JButton btnDelPlayer;
+    public JButton btnAddPlayer;
+    public JButton btnModPlayer;
 
     //
     DefaultListModel dlmPrizes;
