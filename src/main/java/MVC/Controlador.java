@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 public class Controlador implements ActionListener, ListSelectionListener {
     private Vista vista;
+    private Login login;
     private Modelo modelo;
 
     public Controlador(Vista vista, Modelo modelo) {
@@ -13,6 +14,7 @@ public class Controlador implements ActionListener, ListSelectionListener {
         this.modelo = modelo;
         addActionListeners(this);
         addListSelectionListener(this);
+        this.login = new Login();
     }
 
 
@@ -43,7 +45,12 @@ public class Controlador implements ActionListener, ListSelectionListener {
      * @param controlador
      */
     private void addListSelectionListener(Controlador controlador) {
-        //TOOD: Fill Method
+        vista.listPlayer.addListSelectionListener(controlador);
+        vista.listTeam.addListSelectionListener(controlador);
+        vista.listPrizes.addListSelectionListener(controlador);
+        vista.listPlayerTeam.addListSelectionListener(controlador);
+        vista.listTeamTournament.addListSelectionListener(controlador);
+        vista.listTournament.addListSelectionListener(controlador);
     }
 
     /**
@@ -70,5 +77,7 @@ public class Controlador implements ActionListener, ListSelectionListener {
         vista.btnModTournament.addActionListener(controlador);
         vista.btnModTeam.addActionListener(controlador);
         vista.btnImportLogo.addActionListener(controlador);
+        login.btnLogin.addActionListener(controlador);
+
     }
 }
