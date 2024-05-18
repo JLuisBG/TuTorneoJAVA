@@ -3,9 +3,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+
 public class Controlador implements ActionListener, ListSelectionListener {
     private Vista vista;
     private Modelo modelo;
@@ -17,16 +15,7 @@ public class Controlador implements ActionListener, ListSelectionListener {
         addListSelectionListener(this);
     }
 
-    private void addListSelectionListener(Controlador controlador) {
-        //TOOD: Fill Method
-    }
 
-
-    private void addActionListeners(Controlador controlador) {
-        //TOOD: Fill Method
-        vista.conexionItem.addActionListener(controlador);
-        vista.salirItem.addActionListener(controlador);
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -48,5 +37,38 @@ public class Controlador implements ActionListener, ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
 
+    }
+    /**
+     * Add list selection listeners to the view
+     * @param controlador
+     */
+    private void addListSelectionListener(Controlador controlador) {
+        //TOOD: Fill Method
+    }
+
+    /**
+     * Add action listeners to the view
+     * @param controlador
+     */
+    private void addActionListeners(Controlador controlador) {
+        vista.conexionItem.addActionListener(controlador);
+        vista.salirItem.addActionListener(controlador);
+        vista.btnAddTeam.addActionListener(controlador);
+        vista.btnAddPrize.addActionListener(controlador);
+        vista.btnAddTeamTournament.addActionListener(controlador);
+        vista.btnAddTournament.addActionListener(controlador);
+        vista.btnAddPlayerTeam.addActionListener(controlador);
+        vista.btnAddPlayer.addActionListener(controlador);
+        vista.btnDelPlayer.addActionListener(controlador);
+        vista.btnDelPrize.addActionListener(controlador);
+        vista.btnDeleteTeamTournament.addActionListener(controlador);
+        vista.btnDelTournametn.addActionListener(controlador);
+        vista.btnDelTeam.addActionListener(controlador);
+        vista.btnDelPlayerTeam.addActionListener(controlador);
+        vista.btnModPlayer.addActionListener(controlador);
+        vista.btnModPrize.addActionListener(controlador);
+        vista.btnModTournament.addActionListener(controlador);
+        vista.btnModTeam.addActionListener(controlador);
+        vista.btnImportLogo.addActionListener(controlador);
     }
 }

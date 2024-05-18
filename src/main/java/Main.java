@@ -8,5 +8,7 @@ public class Main {
         Controlador controlador = new Controlador(modelo, vista);*/
        // Login login = new Login();
         Vista vista = new Vista();
+        //  System.out.println("pass: "+Util.getSha256("admin"));
+        //System.out.println("user: "+Util.getSha256("user"));
     }
 }
