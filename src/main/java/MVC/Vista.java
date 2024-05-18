@@ -25,7 +25,7 @@ public class Vista extends JFrame {
     public JRadioButton btnEntryFeePaid;
     public DatePicker datePickerPlayerBirth;
     public JTextField txtTeamName;
-    public JComboBox comboPlayyes;
+    public JComboBox comboPlayers;
     public JList listPlayerTeam;
     public JList list2;
     public JButton btnAddPlayerTeam;
@@ -54,6 +54,9 @@ public class Vista extends JFrame {
     DefaultListModel dlmPrizes;
     DefaultListModel dlmPlayers;
     DefaultListModel dlmTeams;
+    DefaultListModel dlmTournaments;
+    DefaultListModel dlmPlayerTeam;
+    DefaultListModel dlmTeamTournament;
     //
     JMenuItem conexionItem;
     JMenuItem salirItem;
@@ -70,6 +73,15 @@ public class Vista extends JFrame {
 
         dlmTeams = new DefaultListModel();
         listTeam.setModel(dlmTeams);
+
+        dlmTournaments = new DefaultListModel();
+        listTournament.setModel(dlmTournaments);
+
+        dlmPlayerTeam = new DefaultListModel();
+        listPlayerTeam.setModel(dlmPlayerTeam);
+
+        dlmTeamTournament = new DefaultListModel();
+        listTeamTournament.setModel(dlmTeamTournament);
     }
 
     public Vista(){

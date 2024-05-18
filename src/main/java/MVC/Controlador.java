@@ -4,6 +4,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import BBDD.*;
 
@@ -75,6 +76,96 @@ public class Controlador implements ActionListener, ListSelectionListener {
         }
     }
 
+    /**
+     * List the players in the view
+     * @param playerList
+     */
+    public void listPlayers(List<Player> playerList){
+        vista.dlmPlayers.clear();
+        for (Player player : playerList) {
+            vista.dlmPlayers.addElement(player);
+        }
+    }
+
+    /**
+     * List the teams in the view
+     * @param teamList
+     */
+    public void listTeams(List<Team> teamList){
+        vista.dlmTeams.clear();
+        for (Team team : teamList) {
+            vista.dlmTeams.addElement(team);
+        }
+    }
+    /**
+     * List the tournaments in the view
+     * @param prizeList
+     */
+    public void listPrizes(List<Prize> prizeList){
+        vista.dlmPrizes.clear();
+        for (Prize prize : prizeList) {
+            vista.dlmPrizes.addElement(prize);
+        }
+    }
+    /**
+     * List the tournaments teams in the view
+     * @param tournamentList
+     */
+    public void listTournaments(List<Tournament> tournamentList){
+        vista.dlmTournaments.clear();
+        for (Tournament tournament : tournamentList) {
+            vista.dlmTournaments.addElement(tournament);
+        }
+
+    }
+
+    /**
+     * List the players in the tournament
+     * @param teamList
+     */
+    public void listTeamTournament(List<Team> teamList){
+
+    }
+    /**
+     * List the players in the team
+     * @param playerList
+     */
+    public void listPlayerTeam(List<Player> playerList){
+        vista.dlmPlayerTeam.clear();
+        for (Player player : playerList) {
+            vista.dlmPlayerTeam.addElement(player);
+        }
+    }
+    /**
+     * List the prizes in the combo
+     * @param prizeList
+     */
+    public void listPrizesCombo(List<Prize> prizeList){
+        vista.comboPrize.removeAllItems();
+        for (Prize prize : prizeList) {
+            vista.dlmPrizes.addElement(prize);
+        }
+        vista.comboPrize.setSelectedIndex(-1);
+    }
+    /**
+     * List the teams in the combo
+     * @param teamList
+     */
+    public void listTeamCombo(List<Team> teamList){
+        vista.comboTeam.removeAllItems();
+        for (Team team : teamList) {
+            vista.dlmTeams.addElement(team);
+        }
+        vista.comboTeam.setSelectedIndex(-1);
+    }
+
+    public void listComboPlayer(List<Player> playerList){
+        vista.comboPlayers.removeAllItems();
+        for (Player player : playerList) {
+            vista.dlmPlayers.addElement(player);
+        }
+        vista.comboPlayers.setSelectedIndex(-1);
+    }
     /**
      * Add list selection listeners to the view
      *
