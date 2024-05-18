@@ -1,8 +1,11 @@
 package MVC;
+
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import BBDD.*;
 
 public class Controlador implements ActionListener, ListSelectionListener {
     private Vista vista;
@@ -18,7 +21,6 @@ public class Controlador implements ActionListener, ListSelectionListener {
     }
 
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         String comando = e.getActionCommand();
@@ -31,17 +33,51 @@ public class Controlador implements ActionListener, ListSelectionListener {
             case "Conectar":
                 modelo.conectar();
                 vista.conexionItem.setEnabled(false);
-                //TODO: Fill to make it takae the list of player, teams and tournaments
                 break;
+            //TODO: Fill to make it takae the list of player, teams and tournaments
         }
     }
 
+    /**
+     * @param e the event that characterizes the change.
+     */
     @Override
     public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) {
+            if (e.getSource() == vista.listPlayer) {
+                Player player = (Player) vista.listPlayer.getSelectedValue();
+                vista.txtFirstNamePlayer.setText(player.getFirstname());
+                vista.txtLastNamePlayer.setText(player.getLastname());
+                vista.txtEmailPlayer.setText(player.getEmail());
+                vista.txtPhonePlayer.setText(player.getTelephoneno().toString());
+                vista.passFieldPlayer.setText("********");
+                vista.datePickerPlayerBirth.setDate(player.getBirthdate());
+                vista.btnEntryFeePaid.setSelected(player.getIsentryfeepaid());
 
+            }
+            if (e.getSource() == vista.listPrizes){
+                Prize prize = (Prize) vista.listPrizes.getSelectedValue();
+                vista.txtPrizeName.setText(prize.getPrizename());
+                vista.txtPrizeAmount.setText(prize.getPrizeamount().toString());
+                vista.txtPrizeQty.setText(prize.getPrizenumber().toString());
+                vista.txtPrizePercentage.setText(prize.getPrizepercentage().toString());
+            }
+            if(e.getSource() == vista.listTeam){
+                Team team = (Team) vista.listTeam.getSelectedValue();
+                vista.txtTeamName.setText(team.getName());
+            }
+            if(e.getSource() == vista.listTournament){
+                Tournament tournament = (Tournament) vista.listTournament.getSelectedValue();
+                vista.txtTournamentName.setText(tournament.getTournamentname());
+                //vista.comboPrize.setSelectedItem(tournament.));
+                //TODO: Hacer el combo de premios con el ide traermelo de la tabla de premios y ponerlo en el combo
+            }
+        }
     }
+
     /**
      * Add list selection listeners to the view
+     *
      * @param controlador
      */
     private void addListSelectionListener(Controlador controlador) {
@@ -55,6 +91,7 @@ public class Controlador implements ActionListener, ListSelectionListener {
 
     /**
      * Add action listeners to the view
+     *
      * @param controlador
      */
     private void addActionListeners(Controlador controlador) {
