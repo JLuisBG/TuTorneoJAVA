@@ -5,9 +5,8 @@ import com.github.lgooddatepicker.components.DatePicker;
 import javax.swing.*;
 import java.awt.*;
 
-public class Vista extends JFrame{
+public class Vista extends JFrame {
     private JTabbedPane tabbedPane1;
-    private JFrame frame;
     private JPanel panel1;
     //
     public JTextField txtPrizeName;
@@ -27,7 +26,6 @@ public class Vista extends JFrame{
     public DatePicker datePickerPlayerBirth;
     public JTextField txtTeamName;
     public JComboBox comboPlayyes;
-    public JButton btnAddPlayerTeam;
     public JList listPlayerTeam;
     public JList list2;
     public JButton añadirJugadorButton;
@@ -47,12 +45,16 @@ public class Vista extends JFrame{
     public JButton btnModTournament;
     public JButton btnDelTournametn;
     public JList listTournament;
+    private JList listPlayer;
+    private JButton btnDelPlayer;
+    private JButton btnAddPlayer;
+    private JButton btnModPlayer;
 
     //
     DefaultListModel dlmPrizes;
     DefaultListModel dlmPlayers;
     DefaultListModel dlmTeams;
-//
+    //
     JMenuItem conexionItem;
     JMenuItem salirItem;
 
@@ -70,20 +72,18 @@ public class Vista extends JFrame{
         listTeam.setModel(dlmTeams);
     }
 
-    public Vista() {
-        createModels();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public Vista(){
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        int width = screenSize.width * 2 / 3; // two-thirds of the screen width
-        int height = screenSize.height * 2 / 3; // two-thirds of the screen height
-        this.setSize(new Dimension(width, height));
+        this.setSize(new Dimension(this.getWidth()+800, this.getHeight()-200));
         this.setLocationRelativeTo(null);
-        crearMenu();
+        createMenu();
+        createModels();
     }
-    private void crearMenu() {
+
+    private void createMenu() {
         JMenuBar barra = new JMenuBar();
         JMenu menu = new JMenu("Archivo");
 
@@ -96,6 +96,6 @@ public class Vista extends JFrame{
         menu.add(conexionItem);
         menu.add(salirItem);
         barra.add(menu);
-        frame.setJMenuBar(barra);
+        this.setJMenuBar(barra);
     }
 }
