@@ -78,6 +78,15 @@ public class Controlador implements ActionListener, ListSelectionListener {
     /**
      * Clear the fields of the player
      */
+    public void clearAllFields(){
+        clearFieldPlayer();
+        clearFieldPrizes();
+        clearFieldTeam();
+        clearFieldTournament();
+    }
+    /**
+     * Clear the fields of the player
+     */
     public void clearFieldPrizes(){
         vista.txtPrizeName.setText("");
         vista.txtPrizeAmount.setText("");
