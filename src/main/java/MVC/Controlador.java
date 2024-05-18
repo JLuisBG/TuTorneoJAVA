@@ -14,11 +14,18 @@ public class Controlador implements ActionListener, ListSelectionListener {
         this.modelo = modelo;
         addActionListeners(this);
         addListSelectionListener(this);
+<<<<<<< HEAD
         this.login = new Login();
     }
 
 
 
+=======
+    }
+
+
+
+>>>>>>> 93fe94e95a55d1881959cdfe244c197f16e0fba9
     @Override
     public void actionPerformed(ActionEvent e) {
         String comando = e.getActionCommand();
@@ -45,12 +52,16 @@ public class Controlador implements ActionListener, ListSelectionListener {
      * @param controlador
      */
     private void addListSelectionListener(Controlador controlador) {
+<<<<<<< HEAD
         vista.listPlayer.addListSelectionListener(controlador);
         vista.listTeam.addListSelectionListener(controlador);
         vista.listPrizes.addListSelectionListener(controlador);
         vista.listPlayerTeam.addListSelectionListener(controlador);
         vista.listTeamTournament.addListSelectionListener(controlador);
         vista.listTournament.addListSelectionListener(controlador);
+=======
+        //TOOD: Fill Method
+>>>>>>> 93fe94e95a55d1881959cdfe244c197f16e0fba9
     }
 
     /**
@@ -77,7 +88,10 @@ public class Controlador implements ActionListener, ListSelectionListener {
         vista.btnModTournament.addActionListener(controlador);
         vista.btnModTeam.addActionListener(controlador);
         vista.btnImportLogo.addActionListener(controlador);
+<<<<<<< HEAD
         login.btnLogin.addActionListener(controlador);
 
+=======
+>>>>>>> 93fe94e95a55d1881959cdfe244c197f16e0fba9
     }
 }
