@@ -1,5 +1,6 @@
 package MVC;
 
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
@@ -8,7 +9,10 @@ import java.util.List;
 
 import BBDD.*;
 
+
+
 public class Controlador implements ActionListener, ListSelectionListener {
+    private boolean conectado;
     private Vista vista;
     private Login login;
     private Modelo modelo;
@@ -16,6 +20,7 @@ public class Controlador implements ActionListener, ListSelectionListener {
     public Controlador(Vista vista, Modelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
+        this.conectado = false;
         addActionListeners(this);
         addListSelectionListener(this);
         this.login = new Login();
@@ -25,6 +30,11 @@ public class Controlador implements ActionListener, ListSelectionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String comando = e.getActionCommand();
+        if (!conectado && !comando.equalsIgnoreCase("Conectar")) {
+            JOptionPane.showMessageDialog(null, "No has conectado con la BBDD",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         switch (comando) {
             case "Salir":
@@ -34,9 +44,32 @@ public class Controlador implements ActionListener, ListSelectionListener {
             case "Conectar":
                 modelo.conectar();
                 vista.conexionItem.setEnabled(false);
+                conectado = true;
                 break;
+            case "btnAddPrize":
+                Prize prize = new Prize();
+                prize.setPrizename(vista.txtPrizeName.getText());
+                prize.setPrizeamount(Float.parseFloat(vista.txtPrizeAmount.getText()));
+                prize.setPrizenumber(Integer.parseInt(vista.txtPrizeQty.getText()));
+                prize.setPrizepercentage(Float.parseFloat(vista.txtPrizePercentage.getText()));
+                modelo.altaPrize(prize);
+                break;
+
+
             //TODO: Fill to make it takae the list of player, teams and tournaments
         }
+        clearAllFields();
+        //updateField();
+    }
+
+    private void updateField() {
+        listPlayers(modelo.getPlayer());
+        listTeams(modelo.getTeam());
+        listPrizes(modelo.getPrize());
+        listTournaments(modelo.getTournament());
+        //listPrizesCombo(modelo.listPrizes());
+        //listTeamCombo(modelo.listTeams());
+        //listComboPlayer(modelo.listPlayers());
     }
 
     /**

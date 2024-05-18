@@ -1,9 +1,9 @@
 package BBDD;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tournament")
@@ -20,6 +20,17 @@ public class Tournament {
 
     @Column(name = "prizeid")
     private Integer prizeid;
+
+    @OneToMany(mappedBy = "tournamentid")
+    private Set<Teamtournament> teamtournaments = new LinkedHashSet<>();
+
+    public Set<Teamtournament> getTeamtournaments() {
+        return teamtournaments;
+    }
+
+    public void setTeamtournaments(Set<Teamtournament> teamtournaments) {
+        this.teamtournaments = teamtournaments;
+    }
 
     public Integer getId() {
         return id;
