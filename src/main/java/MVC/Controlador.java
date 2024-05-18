@@ -75,7 +75,43 @@ public class Controlador implements ActionListener, ListSelectionListener {
             }
         }
     }
+    /**
+     * Clear the fields of the player
+     */
+    public void clearFieldPrizes(){
+        vista.txtPrizeName.setText("");
+        vista.txtPrizeAmount.setText("");
+        vista.txtPrizeQty.setText("");
+        vista.txtPrizePercentage.setText("");
+    }
 
+    /**
+     * Clear the fields of the player
+     */
+    public void clearFieldPlayer(){
+        vista.txtFirstNamePlayer.setText("");
+        vista.txtLastNamePlayer.setText("");
+        vista.txtEmailPlayer.setText("");
+        vista.txtPhonePlayer.setText("");
+        vista.passFieldPlayer.setText("");
+        vista.datePickerPlayerBirth.setDate(null);
+        vista.btnEntryFeePaid.setSelected(false);
+    }
+    /**
+     * Clear the fields of the team
+     */
+    public void clearFieldTeam(){
+        vista.txtTeamName.setText("");
+        vista.comboPlayers.setSelectedIndex(-1);
+    }
+    /**
+     * Clear the fields of the team
+     */
+    public void clearFieldTournament(){
+        vista.txtTournamentName.setText("");
+        vista.comboPrize.setSelectedIndex(-1);
+        vista.comboTeam.setSelectedIndex(-1);
+    }
     /**
      * List the players in the view
      * @param playerList
