@@ -254,34 +254,17 @@ public class Modelo {
         sesion.close();
     }
 
-    public ArrayList<Player> getPlayer() {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        org.hibernate.query.Query query = sesion.createQuery("FROM player");
-        ArrayList<Player> lista = (ArrayList<Player>)query.getResultList();
-        sesion.close();
-        return lista;
+    public ResultSet getPrize() throws SQLException {
+        String sentenciaSql = "SELECT id as 'ID Prize', " +
+                "prizenumber as 'Numero', " +
+                "prizename as 'Nombre', " +
+                "prizeamount as 'Cantidad'," +
+                "prizepercentage as 'Porcentaje' " +
+                "FROM prize";
+        PreparedStatement sentencia = null;
+        ResultSet resultado = null;
+        sentencia = conexion.prepareStatement(sentenciaSql);
+        resultado = sentencia.executeQuery();
+        return resultado;
     }
-
-    public ArrayList<Team> getTeam() {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        org.hibernate.query.Query query = sesion.createQuery("FROM team");
-        ArrayList<Team> lista = (ArrayList<Team>)query.getResultList();
-        sesion.close();
-        return lista;
-    }
-    public ArrayList<Tournament> getTournament() {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        org.hibernate.query.Query query = sesion.createQuery("FROM tournament");
-        ArrayList<Tournament> lista = (ArrayList<Tournament>)query.getResultList();
-        sesion.close();
-        return lista;
-    }
-    public  ArrayList<Prize> getPrize() {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        org.hibernate.query.Query query = sesion.createQuery("FROM prize");
-        ArrayList<Prize> lista = (ArrayList<Prize>)query.getResultList();
-        sesion.close();
-        return lista;
-    }
-
 }

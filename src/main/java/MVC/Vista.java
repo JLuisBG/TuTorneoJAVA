@@ -3,6 +3,7 @@ package MVC;
 import com.github.lgooddatepicker.components.DatePicker;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Vista extends JFrame {
@@ -16,7 +17,6 @@ public class Vista extends JFrame {
     public JButton btnAddPrize;
     public JButton btnModPrize;
     public JButton btnDelPrize;
-    public JList listPrizes;
     public JTextField txtFirstNamePlayer;
     public JTextField txtLastNamePlayer;
     public JTextField txtPhonePlayer;
@@ -26,73 +26,51 @@ public class Vista extends JFrame {
     public DatePicker datePickerPlayerBirth;
     public JTextField txtTeamName;
     public JComboBox comboPlayers;
-    public JList listPlayerTeam;
-    public JList list2;
     public JButton btnAddPlayerTeam;
     public JButton btnDelPlayerTeam;
     public JButton btnAddTeam;
     public JButton btnModTeam;
     public JButton btnDelTeam;
-    public JList listTeam;
     public JButton btnImportLogo;
     public JTextField txtTournamentName;
     public JComboBox comboPrize;
     public JComboBox comboTeam;
     public JButton btnAddTeamTournament;
     public JButton btnDeleteTeamTournament;
-    public JList listTeamTournament;
     public JButton btnAddTournament;
     public JButton btnModTournament;
     public JButton btnDelTournametn;
-    public JList listTournament;
-    public JList listPlayer;
     public JButton btnDelPlayer;
     public JButton btnAddPlayer;
     public JButton btnModPlayer;
+    public JTable tablePrize;
+    public JTable tablePlayer;
+    public JTable tableTeam;
+    public JTable tablePlayerTeam;
+    public JTable tableTeamTournament;
+    public JTable tableTournament;
 
-    //
-    DefaultListModel dlmPrizes;
-    DefaultListModel dlmPlayers;
-    DefaultListModel dlmTeams;
-    DefaultListModel dlmTournaments;
-    DefaultListModel dlmPlayerTeam;
-    DefaultListModel dlmTeamTournament;
+    //default table model
+    DefaultTableModel dtmPrize;
+    DefaultTableModel dtmPlayer;
+    DefaultTableModel dtmTeam;
+    DefaultTableModel dtmPlayerTeam;
+    DefaultTableModel dtmTeamTournament;
+    DefaultTableModel dtmTournament;
     //
     JMenuItem conexionItem;
     JMenuItem salirItem;
 
-    /**
-     * Método que crea los modelos de las listas
-     */
-    private void createModels() {
-        dlmPrizes = new DefaultListModel();
-        listPrizes.setModel(dlmPrizes);
 
-        dlmPlayers = new DefaultListModel();
-        list2.setModel(dlmPlayers);
-
-        dlmTeams = new DefaultListModel();
-        listTeam.setModel(dlmTeams);
-
-        dlmTournaments = new DefaultListModel();
-        listTournament.setModel(dlmTournaments);
-
-        dlmPlayerTeam = new DefaultListModel();
-        listPlayerTeam.setModel(dlmPlayerTeam);
-
-        dlmTeamTournament = new DefaultListModel();
-        listTeamTournament.setModel(dlmTeamTournament);
-    }
-
-    public Vista(){
+    public Vista() {
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        this.setSize(new Dimension(this.getWidth()+800, this.getHeight()-200));
+        this.setSize(new Dimension(this.getWidth() + 800, this.getHeight() - 200));
         this.setLocationRelativeTo(null);
         createMenu();
-        createModels();
+        setTableModels();
     }
 
     private void createMenu() {
@@ -109,5 +87,22 @@ public class Vista extends JFrame {
         menu.add(salirItem);
         barra.add(menu);
         this.setJMenuBar(barra);
+    }
+
+    private void setTableModels() {
+        this.dtmPrize = new DefaultTableModel();
+        this.tablePrize.setModel(dtmPrize);
+        this.dtmPlayer = new DefaultTableModel();
+        this.tablePlayer.setModel(dtmPlayer);
+        this.dtmTeam = new DefaultTableModel();
+        this.tableTeam.setModel(dtmTeam);
+        this.dtmPlayerTeam = new DefaultTableModel();
+        this.tablePlayerTeam.setModel(dtmPlayerTeam);
+        this.dtmTeamTournament = new DefaultTableModel();
+        this.tableTeamTournament.setModel(dtmTeamTournament);
+        this.dtmTournament = new DefaultTableModel();
+        this.tableTournament.setModel(dtmTournament);
+
+
     }
 }

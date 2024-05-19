@@ -3,28 +3,36 @@ package MVC;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Vector;
 
 import BBDD.*;
 
 
-
-public class Controlador implements ActionListener, ListSelectionListener {
+public class Controlador implements ActionListener, ItemListener, ListSelectionListener, WindowListener {
     private boolean conectado;
     private Vista vista;
-    private Login login;
+    //private Login login;
     private Modelo modelo;
+    private boolean update;
 
     public Controlador(Vista vista, Modelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
         this.conectado = false;
         addActionListeners(this);
-        addListSelectionListener(this);
-        this.login = new Login();
+        addWindowListeners(this);
+        clearAllFields();
+        uppdateAll();
+        initAll();
+
+        //this.login = new Login();
     }
 
 
@@ -48,22 +56,34 @@ public class Controlador implements ActionListener, ListSelectionListener {
                 conectado = true;
                 break;
             case "btnAddPrize":
-                Prize prize = new Prize();
-                prize.setPrizename(vista.txtPrizeName.getText());
-                prize.setPrizeamount(Float.parseFloat(vista.txtPrizeAmount.getText()));
-                prize.setPrizenumber(Integer.parseInt(vista.txtPrizeQty.getText()));
-                prize.setPrizepercentage(Float.parseFloat(vista.txtPrizePercentage.getText()));
-                modelo.altaPrize(prize);
+                if (voidPrize()) {
+                    Herramientas.showErrorAlert("Rellena todos los campos");
+                } else {
+                    Prize prize = new Prize();
+                    prize.setPrizename(vista.txtPrizeName.getText());
+                    prize.setPrizeamount(Float.parseFloat(vista.txtPrizeAmount.getText()));
+                    prize.setPrizenumber(Integer.parseInt(vista.txtPrizeQty.getText()));
+                    prize.setPrizepercentage(Float.parseFloat(vista.txtPrizePercentage.getText()));
+                    modelo.altaPrize(prize);
+                }
+                clearFieldPrizes();
                 break;
             case "btnAddPlayer":
-                modelo.altaPlayer(Arrays.toString(vista.passFieldPlayer.getPassword()),
-                        vista.txtEmailPlayer.getText(),
-                        vista.btnEntryFeePaid.isSelected(),
-                        vista.datePickerPlayerBirth.getDate(),
-                        vista.txtPhonePlayer.getText(),
-                        vista.txtFirstNamePlayer.getText(),
-                        vista.txtLastNamePlayer.getText()
-                        );
+                if (voidPlayer()) {
+                    Herramientas.showErrorAlert("Rellena todos los campos");
+                } else {
+                    modelo.altaPlayer(Arrays.toString(vista.passFieldPlayer.getPassword()),
+                            vista.txtEmailPlayer.getText(),
+                            vista.btnEntryFeePaid.isSelected(),
+                            vista.datePickerPlayerBirth.getDate(),
+                            vista.txtPhonePlayer.getText(),
+                            vista.txtFirstNamePlayer.getText(),
+                            vista.txtLastNamePlayer.getText()
+                    );
+                }
+                clearFieldPlayer();
+
+                break;
 
             //TODO: Fill to make it takae the list of player, teams and tournaments
         }
@@ -71,65 +91,29 @@ public class Controlador implements ActionListener, ListSelectionListener {
         //updateField();
     }
 
-    private void updateField() {
-        listPlayers(modelo.getPlayer());
-        listTeams(modelo.getTeam());
-        listPrizes(modelo.getPrize());
-        listTournaments(modelo.getTournament());
-        //listPrizesCombo(modelo.listPrizes());
-        //listTeamCombo(modelo.listTeams());
-        //listComboPlayer(modelo.listPlayers());
-    }
 
     /**
      * @param e the event that characterizes the change.
      */
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (e.getValueIsAdjusting()) {
-            if (e.getSource() == vista.listPlayer) {
-                Player player = (Player) vista.listPlayer.getSelectedValue();
-                vista.txtFirstNamePlayer.setText(player.getFirstname());
-                vista.txtLastNamePlayer.setText(player.getLastname());
-                vista.txtEmailPlayer.setText(player.getEmail());
-                vista.txtPhonePlayer.setText(player.getTelephoneno().toString());
-                vista.passFieldPlayer.setText("********");
-                vista.datePickerPlayerBirth.setDate(player.getBirthdate());
-                vista.btnEntryFeePaid.setSelected(player.getIsentryfeepaid());
 
-            }
-            if (e.getSource() == vista.listPrizes){
-                Prize prize = (Prize) vista.listPrizes.getSelectedValue();
-                vista.txtPrizeName.setText(prize.getPrizename());
-                vista.txtPrizeAmount.setText(prize.getPrizeamount().toString());
-                vista.txtPrizeQty.setText(prize.getPrizenumber().toString());
-                vista.txtPrizePercentage.setText(prize.getPrizepercentage().toString());
-            }
-            if(e.getSource() == vista.listTeam){
-                Team team = (Team) vista.listTeam.getSelectedValue();
-                vista.txtTeamName.setText(team.getName());
-            }
-            if(e.getSource() == vista.listTournament){
-                Tournament tournament = (Tournament) vista.listTournament.getSelectedValue();
-                vista.txtTournamentName.setText(tournament.getTournamentname());
-                //vista.comboPrize.setSelectedItem(tournament.));
-                //TODO: Hacer el combo de premios con el ide traermelo de la tabla de premios y ponerlo en el combo
-            }
-        }
     }
+
     /**
      * Clear the fields of the player
      */
-    public void clearAllFields(){
+    public void clearAllFields() {
         clearFieldPlayer();
         clearFieldPrizes();
         clearFieldTeam();
         clearFieldTournament();
     }
+
     /**
      * Clear the fields of the player
      */
-    public void clearFieldPrizes(){
+    public void clearFieldPrizes() {
         vista.txtPrizeName.setText("");
         vista.txtPrizeAmount.setText("");
         vista.txtPrizeQty.setText("");
@@ -139,7 +123,7 @@ public class Controlador implements ActionListener, ListSelectionListener {
     /**
      * Clear the fields of the player
      */
-    public void clearFieldPlayer(){
+    public void clearFieldPlayer() {
         vista.txtFirstNamePlayer.setText("");
         vista.txtLastNamePlayer.setText("");
         vista.txtEmailPlayer.setText("");
@@ -148,127 +132,31 @@ public class Controlador implements ActionListener, ListSelectionListener {
         vista.datePickerPlayerBirth.setDate(null);
         vista.btnEntryFeePaid.setSelected(false);
     }
+
     /**
      * Clear the fields of the team
      */
-    public void clearFieldTeam(){
+    public void clearFieldTeam() {
         vista.txtTeamName.setText("");
         vista.comboPlayers.setSelectedIndex(-1);
     }
+
     /**
      * Clear the fields of the team
      */
-    public void clearFieldTournament(){
+    public void clearFieldTournament() {
         vista.txtTournamentName.setText("");
         vista.comboPrize.setSelectedIndex(-1);
         vista.comboTeam.setSelectedIndex(-1);
     }
-    /**
-     * List the players in the view
-     * @param playerList
-     */
-    public void listPlayers(List<Player> playerList){
-        vista.dlmPlayers.clear();
-        for (Player player : playerList) {
-            vista.dlmPlayers.addElement(player);
-        }
-    }
 
     /**
-     * List the teams in the view
-     * @param teamList
-     */
-    public void listTeams(List<Team> teamList){
-        vista.dlmTeams.clear();
-        for (Team team : teamList) {
-            vista.dlmTeams.addElement(team);
-        }
-    }
-    /**
-     * List the tournaments in the view
-     * @param prizeList
-     */
-    public void listPrizes(List<Prize> prizeList){
-        vista.dlmPrizes.clear();
-        for (Prize prize : prizeList) {
-            vista.dlmPrizes.addElement(prize);
-        }
-    }
-    /**
-     * List the tournaments teams in the view
-     * @param tournamentList
-     */
-    public void listTournaments(List<Tournament> tournamentList){
-        vista.dlmTournaments.clear();
-        for (Tournament tournament : tournamentList) {
-            vista.dlmTournaments.addElement(tournament);
-        }
-
-    }
-
-    /**
-     * List the players in the tournament
-     * @param teamList
-     */
-    public void listTeamTournament(List<Team> teamList){
-
-    }
-    /**
-     * List the players in the team
-     * @param playerList
-     */
-    public void listPlayerTeam(List<Player> playerList){
-        vista.dlmPlayerTeam.clear();
-        for (Player player : playerList) {
-            vista.dlmPlayerTeam.addElement(player);
-        }
-    }
-    /**
-     * List the prizes in the combo
-     * @param prizeList
-     */
-    public void listPrizesCombo(List<Prize> prizeList){
-        vista.comboPrize.removeAllItems();
-        for (Prize prize : prizeList) {
-            vista.dlmPrizes.addElement(prize);
-        }
-        vista.comboPrize.setSelectedIndex(-1);
-    }
-    /**
-     * List the teams in the combo
-     * @param teamList
-     */
-    public void listTeamCombo(List<Team> teamList){
-        vista.comboTeam.removeAllItems();
-        for (Team team : teamList) {
-            vista.dlmTeams.addElement(team);
-        }
-        vista.comboTeam.setSelectedIndex(-1);
-    }
-
-    /**
-     * List the players in the combo
-     * @param playerList
-     */
-    public void listComboPlayer(List<Player> playerList){
-        vista.comboPlayers.removeAllItems();
-        for (Player player : playerList) {
-            vista.dlmPlayers.addElement(player);
-        }
-        vista.comboPlayers.setSelectedIndex(-1);
-    }
-    /**
-     * Add list selection listeners to the view
+     * Añade WindowListeners a la vista
      *
-     * @param controlador
+     * @param listener WindowListener que se añade
      */
-    private void addListSelectionListener(Controlador controlador) {
-        vista.listPlayer.addListSelectionListener(controlador);
-        vista.listTeam.addListSelectionListener(controlador);
-        vista.listPrizes.addListSelectionListener(controlador);
-        vista.listPlayerTeam.addListSelectionListener(controlador);
-        vista.listTeamTournament.addListSelectionListener(controlador);
-        vista.listTournament.addListSelectionListener(controlador);
+    private void addWindowListeners(WindowListener listener) {
+        vista.addWindowListener(listener);
     }
 
     /**
@@ -296,7 +184,164 @@ public class Controlador implements ActionListener, ListSelectionListener {
         vista.btnModTournament.addActionListener(controlador);
         vista.btnModTeam.addActionListener(controlador);
         vista.btnImportLogo.addActionListener(controlador);
-        login.btnLogin.addActionListener(controlador);
+        //login.btnLogin.addActionListener(controlador);
 
+    }
+
+    /**
+     * Check if the fields are empty
+     */
+    private boolean voidPlayer() {
+        return vista.txtFirstNamePlayer.getText().isEmpty() || vista.txtLastNamePlayer.getText().isEmpty() ||
+                vista.txtEmailPlayer.getText().isEmpty() || vista.txtPhonePlayer.getText().isEmpty() ||
+                vista.passFieldPlayer.getPassword().length == 0 || vista.datePickerPlayerBirth.getDate() == null;
+    }
+
+    /**
+     * Check if the fields are empty
+     */
+    private boolean voidPrize() {
+        return vista.txtPrizeName.getText().isEmpty() || vista.txtPrizeAmount.getText().isEmpty() ||
+                vista.txtPrizeQty.getText().isEmpty() || vista.txtPrizePercentage.getText().isEmpty();
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
+    }
+
+    /**
+     * Refresh the tables
+     */
+    private void uppdateAll() {
+        updatePrize();
+        //updatePlayer(); TODO:
+        //updateTeam(); TODO:
+        //updateTournament();TODO:
+    }
+
+    /**
+     * Refresh the prize table
+     */
+    private void updatePrize() {
+        try {
+            vista.tablePrize.setModel(buildTableModelPrize(modelo.getPrize()));
+            vista.comboPrize.removeAllItems();
+            for (int i = 0; i < vista.tablePrize.getRowCount(); i++) {
+                vista.comboPrize.addItem(vista.dtmPrize.getValueAt(i, 1) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 2) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 3) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 4));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Build the DTM for the Prize Table
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    private DefaultTableModel buildTableModelPrize(ResultSet rs) throws SQLException {
+        Vector<String> columnNames = new Vector<>();
+        Vector<Vector<Object>> data = new Vector<>();
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+            columnNames.add(metaData.getColumnName(columnIndex));
+        }
+        setDataVector(rs, columnCount, data);
+        vista.dtmPrize.setDataVector(data, columnNames);
+        return null;
+    }
+
+    /**
+     * Refresh the tables
+     *
+     * @param rs
+     * @param columnCount
+     * @param data
+     * @throws SQLException
+     */
+    private void setDataVector(ResultSet rs, int columnCount, Vector<Vector<Object>> data) throws SQLException {
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                vector.add(rs.getObject(columnIndex));
+            }
+            data.add(vector);
+        }
+    }
+    /*
+     * Muestra los atributos de un objeto seleccionado y los borra una vez se deselecciona
+     * @param e Evento producido en una lista
+     */
+
+    private void initAll(){
+        vista.tablePrize.setCellSelectionEnabled(true);
+        ListSelectionModel cellSelectionModel =  vista.tablePrize.getSelectionModel();
+        cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()
+                        && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
+                    if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
+                        int row = vista.tablePrize.getSelectedRow();
+                        vista.txtPrizeQty.setText(String.valueOf(vista.tablePrize.getValueAt(row, 1)));
+                        vista.txtPrizeName.setText(String.valueOf(vista.tablePrize.getValueAt(row, 2)));
+                        vista.txtPrizeAmount.setText(String.valueOf(vista.tablePrize.getValueAt(row, 3)));
+                        vista.txtPrizePercentage.setText(String.valueOf(vista.tablePrize.getValueAt(row, 4)));
+                    } else if (e.getValueIsAdjusting()
+                            && ((ListSelectionModel) e.getSource()).isSelectionEmpty() && !update) {
+                        if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                            clearFieldPlayer();
+                        } else if (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
+                            clearFieldTeam();
+                        } else if (e.getSource().equals(vista.tableTournament.getSelectionModel())) {
+                            clearFieldTournament();
+                        }
+                    }
+                }
+            }
+        });
     }
 }
