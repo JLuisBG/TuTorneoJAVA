@@ -5,6 +5,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 
 import BBDD.*;
@@ -54,7 +55,15 @@ public class Controlador implements ActionListener, ListSelectionListener {
                 prize.setPrizepercentage(Float.parseFloat(vista.txtPrizePercentage.getText()));
                 modelo.altaPrize(prize);
                 break;
-
+            case "btnAddPlayer":
+                modelo.altaPlayer(Arrays.toString(vista.passFieldPlayer.getPassword()),
+                        vista.txtEmailPlayer.getText(),
+                        vista.btnEntryFeePaid.isSelected(),
+                        vista.datePickerPlayerBirth.getDate(),
+                        vista.txtPhonePlayer.getText(),
+                        vista.txtFirstNamePlayer.getText(),
+                        vista.txtLastNamePlayer.getText()
+                        );
 
             //TODO: Fill to make it takae the list of player, teams and tournaments
         }
@@ -237,6 +246,10 @@ public class Controlador implements ActionListener, ListSelectionListener {
         vista.comboTeam.setSelectedIndex(-1);
     }
 
+    /**
+     * List the players in the combo
+     * @param playerList
+     */
     public void listComboPlayer(List<Player> playerList){
         vista.comboPlayers.removeAllItems();
         for (Player player : playerList) {

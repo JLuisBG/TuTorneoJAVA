@@ -1,10 +1,12 @@
 package MVC;
-
 import BBDD.*;
 import org.hibernate.SessionFactory;
 
+
+
 import java.io.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -154,13 +156,30 @@ public class Modelo {
                 }
         }
     }
-    public void altaPlayer(Player nuevoPlayer) {
-        //Obtengo una session a partir de la factoria de sesiones
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.save(nuevoPlayer);
-        sesion.getTransaction().commit();
-        sesion.close();
+    public void altaPlayer(String pass, String email, boolean isEntryFeePaid, LocalDate birthdate, String telephoneno, String firstname, String lastname) {
+        String sentenciaSql = "INSERT INTO players (pass, email, isentryfeepaid, birthdate, telephoneno, firstname, lastname) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement sentencia = null;
+        String password = Herramientas.getSha256(pass);
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, password);
+            sentencia.setString(2, Herramientas.formatVarchar50(email) );
+            sentencia.setBoolean(3, isEntryFeePaid);
+            sentencia.setDate(4, Date.valueOf(birthdate));
+            sentencia.setInt(5, Herramientas.formatString9(telephoneno));
+            sentencia.setString(6, Herramientas.formatVarchar50(firstname));
+            sentencia.setString(7, Herramientas.formatVarchar50(lastname));
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
     }
     public void altaTeam(Team nuevoTeam) {
         //Obtengo una session a partir de la factoria de sesiones

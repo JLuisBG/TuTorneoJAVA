@@ -1,13 +1,15 @@
+package MVC;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.security.MessageDigest;
 
 /**
- * Esta es una clase en la que tengo métodos estáticos para crear una ventana con un mensaje.
+ * Esta es una clase en la que tengo métodos estáticos
  * Cada método se refiere a un tipo distinto de mensaje.
  */
-public class Util {
+public class Herramientas {
     /**
      * Este método me muestra un mensaje de error con el texto recibido
      *
@@ -100,6 +102,25 @@ public class Util {
         StringBuffer result = new StringBuffer();
         for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
         return result.toString();
+    }
+/**
+     * Este método me formatea un String a un tamaño de 50 caracteres
+     *
+     * @param value Valor a formatear
+     * @return Devuelve un String con el valor formateado
+     */
+    public static String formatVarchar50(String value) {
+        return value.length() > 50 ? value.substring(0, 49) : value;
+    }
+    /**
+     * Este método me formatea un int a un tamaño de 9 caracteres
+     *
+     * @param value Valor a formatear
+     * @return Devuelve un String con el valor formateado
+
+     */
+    public static int formatString9(String value) {
+        return Integer.parseInt(value.length() > 9 ? value.substring(0, 8) : value);
     }
 
 }
