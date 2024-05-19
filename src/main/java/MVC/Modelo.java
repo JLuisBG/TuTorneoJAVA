@@ -141,9 +141,9 @@ public class Modelo {
         try {
             sentencia = conexion.prepareStatement(sentenciaSql);
             sentencia.setInt(1, nuevoPrize.getPrizenumber());
-            sentencia.setString(2, nuevoPrize.getPrizename());
+            sentencia.setString(2, Herramientas.formatVarchar50(nuevoPrize.getPrizename()));
             sentencia.setFloat(3, nuevoPrize.getPrizeamount());
-            sentencia.setFloat(4, nuevoPrize.getPrizepercentage());
+            sentencia.setFloat(4, Float.parseFloat(nuevoPrize.getPrizepercentage().toString().replaceAll("^\\s+|\\s+$", "")));
             sentencia.executeUpdate();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
