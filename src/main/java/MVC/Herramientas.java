@@ -3,7 +3,10 @@ package MVC;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Base64;
 
 /**
  * Esta es una clase en la que tengo métodos estáticos
@@ -77,12 +80,12 @@ public class Herramientas {
         JOptionPane.showMessageDialog(null, mensaje, "Exito", JOptionPane.INFORMATION_MESSAGE);
     }
 
-/**
+    /**
      * Este método me devuelve el valor de un hash SHA-256 de un valor
      *
      * @param value Valor a hashear
      * @return Devuelve un String con el valor hasheado
- */
+     */
     public static String getSha256(String value) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -92,7 +95,8 @@ public class Herramientas {
             throw new RuntimeException(ex);
         }
     }
-/**
+
+    /**
      * Este método me convierte un array de bytes en un String hexadecimal
      *
      * @param bytes Array de bytes
@@ -103,7 +107,8 @@ public class Herramientas {
         for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
         return result.toString();
     }
-/**
+
+    /**
      * Este método me formatea un String a un tamaño de 50 caracteres
      *
      * @param value Valor a formatear
@@ -112,15 +117,34 @@ public class Herramientas {
     public static String formatVarchar50(String value) {
         return value.length() > 50 ? value.substring(0, 49) : value;
     }
+
     /**
      * Este método me formatea un int a un tamaño de 9 caracteres
      *
      * @param value Valor a formatear
      * @return Devuelve un String con el valor formateado
-
      */
     public static int formatString9(String value) {
         return Integer.parseInt(value.length() > 9 ? value.substring(0, 8) : value);
     }
 
+    /**
+     * Este método me convierte una imagen en un String en base64 basado en la ruta de la imagen
+     * @param imagePath
+     * @return
+     * @throws IOException
+     */
+    private static String convertImageToBase64(String imagePath) throws IOException {
+        File imageFile = new File(imagePath);
+        if (imageFile.exists()) {
+            FileInputStream fileInputStream = new FileInputStream(imageFile);
+            byte[] imageData = new byte[(int) imageFile.length()];
+            fileInputStream.read(imageData);
+            fileInputStream.close();
+            return Base64.getEncoder().encodeToString(imageData);
+        } else {
+            throw new IOException("Image file not found: " + imagePath);
+        }
+    }
 }
+
