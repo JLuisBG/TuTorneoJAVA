@@ -77,8 +77,8 @@ public class Vista extends JFrame {
         JMenuBar barra = new JMenuBar();
         JMenu menu = new JMenu("Archivo");
 
-        conexionItem = new JMenuItem("Conectar");
-        conexionItem.setActionCommand("Conectar");
+        conexionItem = new JMenuItem("Desconectar");
+        conexionItem.setActionCommand("Desconectar");
 
         salirItem = new JMenuItem("Salir");
         salirItem.setActionCommand("Salir");

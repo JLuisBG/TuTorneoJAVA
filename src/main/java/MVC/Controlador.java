@@ -6,6 +6,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.*;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -25,7 +26,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     public Controlador(Vista vista, Modelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
-        this.conectado = false;
+        this.conectado = true;
+        modelo.conectar();
         addActionListeners(this);
         addWindowListeners(this);
         clearAllFields();
@@ -50,10 +52,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 modelo.desconectar();
                 System.exit(0);
                 break;
-            case "Conectar":
-                modelo.conectar();
-                vista.conexionItem.setEnabled(false);
-                conectado = true;
+            case "Desconectar":
+                modelo.desconectar();
+                conectado = false;
                 break;
             case "btnAddPrize":
                 if (voidPrize()) {
@@ -91,14 +92,6 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         //updateField();
     }
 
-
-    /**
-     * @param e the event that characterizes the change.
-     */
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-
-    }
 
     /**
      * Clear the fields of the player
@@ -250,10 +243,44 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
      */
     private void uppdateAll() {
         updatePrize();
-        //updatePlayer(); TODO:
+        updatePlayer();
         //updateTeam(); TODO:
         //updateTournament();TODO:
     }
+
+    private void updatePlayer() {
+        try {
+            vista.tablePlayer.setModel(buildTableModelPlayer(modelo.getPlayer()));
+            vista.comboPlayers.removeAllItems();
+            for (int i = 0; i < vista.tablePlayer.getRowCount(); i++) {
+                vista.comboPlayers.addItem(vista.dtmPlayer.getValueAt(i, 1) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 2) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 3) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 4) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 5) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 6) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 7) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 8));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TableModel buildTableModelPlayer(ResultSet rs) throws SQLException {
+        Vector<String> columnNames = new Vector<>();
+        Vector<Vector<Object>> data = new Vector<>();
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+            columnNames.add(metaData.getColumnName(columnIndex));
+        }
+        setDataVector(rs, columnCount, data);
+        vista.dtmPrize.setDataVector(data, columnNames);
+        return vista.dtmPrize;
+    }
+
 
     /**
      * Refresh the prize table
@@ -265,8 +292,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             for (int i = 0; i < vista.tablePrize.getRowCount(); i++) {
                 vista.comboPrize.addItem(vista.dtmPrize.getValueAt(i, 1) + "-"
                         + vista.dtmPlayer.getValueAt(i, 2) + "-"
-                        + vista.dtmPlayer.getValueAt(i, 3) + "-"
-                        + vista.dtmPlayer.getValueAt(i, 4));
+                        + vista.dtmPlayer.getValueAt(i, 3) + "-");
+                //+ vista.dtmPlayer.getValueAt(i, 4));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,7 +317,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         }
         setDataVector(rs, columnCount, data);
         vista.dtmPrize.setDataVector(data, columnNames);
-        return null;
+        return vista.dtmPrize;
     }
 
     /**
@@ -315,9 +342,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
      * @param e Evento producido en una lista
      */
 
-    private void initAll(){
+    private void initAll() {
         vista.tablePrize.setCellSelectionEnabled(true);
-        ListSelectionModel cellSelectionModel =  vista.tablePrize.getSelectionModel();
+        ListSelectionModel cellSelectionModel = vista.tablePrize.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -330,6 +357,15 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         vista.txtPrizeName.setText(String.valueOf(vista.tablePrize.getValueAt(row, 2)));
                         vista.txtPrizeAmount.setText(String.valueOf(vista.tablePrize.getValueAt(row, 3)));
                         vista.txtPrizePercentage.setText(String.valueOf(vista.tablePrize.getValueAt(row, 4)));
+                    } else if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                        int row = vista.tablePlayer.getSelectedRow();
+                        vista.txtFirstNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 1)));
+                        vista.txtLastNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 2)));
+                        vista.txtEmailPlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 3)));
+                        vista.txtPhonePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 4)));
+                        vista.passFieldPlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 5)));
+                        vista.datePickerPlayerBirth.setDate(Date.valueOf(String.valueOf(vista.tablePlayer.getValueAt(row, 6))).toLocalDate());
+                        vista.btnEntryFeePaid.setSelected((boolean) vista.tablePlayer.getValueAt(row, 7));
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty() && !update) {
                         if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
@@ -343,5 +379,37 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 }
             }
         });
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()
+                && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
+            if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
+                int row = vista.tablePrize.getSelectedRow();
+                vista.txtPrizeQty.setText(String.valueOf(vista.tablePrize.getValueAt(row, 1)));
+                vista.txtPrizeName.setText(String.valueOf(vista.tablePrize.getValueAt(row, 2)));
+                vista.txtPrizeAmount.setText(String.valueOf(vista.tablePrize.getValueAt(row, 3)));
+                vista.txtPrizePercentage.setText(String.valueOf(vista.tablePrize.getValueAt(row, 4)));
+            } else if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                int row = vista.tablePlayer.getSelectedRow();
+                vista.txtFirstNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 1)));
+                vista.txtLastNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 2)));
+                vista.txtEmailPlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 3)));
+                vista.txtPhonePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 4)));
+                vista.passFieldPlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 5)));
+                vista.datePickerPlayerBirth.setDate(Date.valueOf(String.valueOf(vista.tablePlayer.getValueAt(row, 6))).toLocalDate());
+                vista.btnEntryFeePaid.setSelected((boolean) vista.tablePlayer.getValueAt(row, 7));
+            } else if (e.getValueIsAdjusting()
+                    && ((ListSelectionModel) e.getSource()).isSelectionEmpty() && !update) {
+                if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                    clearFieldPlayer();
+                } else if (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
+                    clearFieldTeam();
+                } else if (e.getSource().equals(vista.tableTournament.getSelectionModel())) {
+                    clearFieldTournament();
+                }
+            }
+        }
     }
 }
