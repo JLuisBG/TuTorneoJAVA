@@ -269,15 +269,7 @@ public class Modelo {
     }
 
     public ResultSet getPlayer() throws SQLException {
-        String sentenciaSql = "SELECT id as 'ID Prize', " +
-                "pass as 'Pass', " +
-                "email as 'Email', " +
-                "isentryfeepaid as 'Entrada'," +
-                "birthdate as 'Fecha de nacimiento' " +
-                "telephoneno as 'Telefono', " +
-                "firstname as 'Nombre', " +
-                "lastname as 'Apellido' " +
-                "FROM players";
+        String sentenciaSql = "SELECT * FROM players";
         PreparedStatement sentencia = null;
         ResultSet resultado = null;
         sentencia = conexion.prepareStatement(sentenciaSql);
