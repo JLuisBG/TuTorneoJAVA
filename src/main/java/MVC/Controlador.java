@@ -255,7 +255,6 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             vista.tablePlayer.setModel(buildTableModelPlayer(modelo.getPlayer()));
             vista.comboPlayers.removeAllItems();
             for (int i = 0; i < vista.dtmPlayer.getRowCount(); i++) {
-                System.out.println(vista.tablePlayer.getRowCount());
                 vista.comboPlayers.addItem(vista.dtmPlayer.getValueAt(i, 1) + "-"
                         + vista.dtmPlayer.getValueAt(0, 2) + "-"
                         + vista.dtmPlayer.getValueAt(0, 3) + "-"
@@ -294,10 +293,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             vista.tablePrize.setModel(buildTableModelPrize(modelo.getPrize()));
             vista.comboPrize.removeAllItems();
             for (int i = 0; i < vista.dtmPrize.getRowCount(); i++) {
-                System.out.println("Indice:"+i);
-                System.out.println(vista.dtmPrize.getRowCount());
                 vista.comboPrize.addItem(vista.dtmPrize.getValueAt(i, 2)) ;
-                //+ vista.dtmPlayer.getValueAt(i, 4));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -314,10 +310,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     private DefaultTableModel buildTableModelPrize(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         Vector<String> columnNames = new Vector<>();
-
-
         int columnCount = metaData.getColumnCount();
-        System.out.println(columnCount);
         for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
             columnNames.add(metaData.getColumnName(columnIndex));
         }
@@ -388,13 +381,13 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                     if  (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
                         int row = vista.tablePlayer.getSelectedRow();
-                        vista.txtFirstNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 7)));
-                        vista.txtLastNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 8)));
+                        vista.txtFirstNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 6)));
+                        vista.txtLastNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 7)));
                         vista.txtEmailPlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 2)));
-                        vista.txtPhonePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 6)));
+                        vista.txtPhonePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 5)));
                         vista.passFieldPlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 1)));
-                        vista.datePickerPlayerBirth.setDate(Date.valueOf(String.valueOf(vista.tablePlayer.getValueAt(row, 5))).toLocalDate());
-                        vista.btnEntryFeePaid.setSelected((boolean) vista.tablePlayer.getValueAt(row, 4));
+                        vista.datePickerPlayerBirth.setDate((Date.valueOf(String.valueOf(vista.tablePlayer.getValueAt(row, 4)))).toLocalDate());
+                        vista.btnEntryFeePaid.setSelected((boolean) vista.tablePlayer.getValueAt(row, 3));
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty() && !update) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
