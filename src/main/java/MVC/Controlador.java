@@ -68,6 +68,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     modelo.altaPrize(prize);
                 }
                 clearFieldPrizes();
+                updatePrize();
                 break;
             case "btnAddPlayer":
                 if (voidPlayer()) {
@@ -83,6 +84,11 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     );
                 }
                 clearFieldPlayer();
+                updatePlayer();
+
+                break;
+
+            case "btnModPrize":
 
                 break;
 
@@ -242,8 +248,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
      * Refresh the tables
      */
     private void uppdateAll() {
-        updatePrize();
         updatePlayer();
+        updatePrize();
+
 
 
         //updateTeam(); TODO:
@@ -255,14 +262,14 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             vista.tablePlayer.setModel(buildTableModelPlayer(modelo.getPlayer()));
             vista.comboPlayers.removeAllItems();
             for (int i = 0; i < vista.dtmPlayer.getRowCount(); i++) {
-                vista.comboPlayers.addItem(vista.dtmPlayer.getValueAt(i, 1) + "-"
+                vista.comboPlayers.addItem(vista.dtmPlayer.getValueAt(i, 0) + "-"
+                        + vista.dtmPlayer.getValueAt(0, 1) + "-"
                         + vista.dtmPlayer.getValueAt(0, 2) + "-"
                         + vista.dtmPlayer.getValueAt(0, 3) + "-"
                         + vista.dtmPlayer.getValueAt(0, 4) + "-"
                         + vista.dtmPlayer.getValueAt(0, 5) + "-"
                         + vista.dtmPlayer.getValueAt(0, 6) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 7) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 8));
+                        + vista.dtmPlayer.getValueAt(0, 7));
 
             }
         } catch (SQLException e) {
@@ -270,7 +277,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         }
     }
 
-    private TableModel buildTableModelPlayer(ResultSet rs) throws SQLException {
+    private DefaultTableModel buildTableModelPlayer(ResultSet rs) throws SQLException {
         Vector<String> columnNames = new Vector<>();
 
         ResultSetMetaData metaData = rs.getMetaData();
@@ -280,8 +287,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         }
         Vector<Vector<Object>> data = new Vector<>();
         setDataVector(rs, columnCount, data);
-        vista.dtmPrize.setDataVector(data, columnNames);
-        return vista.dtmPrize;
+        vista.dtmPlayer.setDataVector(data, columnNames);
+        return vista.dtmPlayer;
     }
 
 
@@ -333,7 +340,6 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             Vector<Object> vector = new Vector<>();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 vector.add(rs.getObject(columnIndex));
-                System.out.println(rs.getObject(columnIndex));
             }
             data.add(vector);
         }

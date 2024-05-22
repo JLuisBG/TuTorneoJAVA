@@ -92,10 +92,14 @@ public class Vista extends JFrame {
     private void setTableModels() {
         this.dtmPrize = new DefaultTableModel();
         this.tablePrize.setModel(dtmPrize);
+
+
         this.dtmPlayer = new DefaultTableModel();
         this.tablePlayer.setModel(dtmPlayer);
+
         this.dtmTeam = new DefaultTableModel();
         this.tableTeam.setModel(dtmTeam);
+
         this.dtmPlayerTeam = new DefaultTableModel();
         this.tablePlayerTeam.setModel(dtmPlayerTeam);
         this.dtmTeamTournament = new DefaultTableModel();

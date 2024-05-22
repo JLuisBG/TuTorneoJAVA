@@ -181,78 +181,6 @@ public class Modelo {
                 }
         }
     }
-    public void altaTeam(Team nuevoTeam) {
-        //Obtengo una session a partir de la factoria de sesiones
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.save(nuevoTeam);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void altaTournament(Tournament nuevoTournament) {
-        //Obtengo una session a partir de la factoria de sesiones
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.save(nuevoTournament);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void modificarPrize(Prize prizeSeleccion) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.saveOrUpdate(prizeSeleccion);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void modificarPlayer(Player playerSeleccion) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.saveOrUpdate(playerSeleccion);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void modificarTeam(Team teamSeleccion) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.saveOrUpdate(teamSeleccion);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void modificarTournament(Tournament tournamentSeleccion) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.saveOrUpdate(tournamentSeleccion);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void borrarPrize(Prize prizeBorrado) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.delete(prizeBorrado);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void borrarPlayer(Player playerBorrado) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.delete(playerBorrado);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void borrarTeam(Team teamBorrado) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.delete(teamBorrado);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
-    public void borrarTournament(Tournament tournamentBorrado) {
-        org.hibernate.Session sesion = sessionFactory.openSession();
-        sesion.beginTransaction();
-        sesion.delete(tournamentBorrado);
-        sesion.getTransaction().commit();
-        sesion.close();
-    }
 
     public ResultSet getPrize() throws SQLException {
         String sentenciaSql = "SELECT id as 'ID Prize', " +
@@ -275,5 +203,27 @@ public class Modelo {
         sentencia = conexion.prepareStatement(sentenciaSql);
         resultado = sentencia.executeQuery();
         return resultado;
+    }
+    public void modPrize(int prizeId, int prizenumber, String prizename, float prizeamount, float prizepercentage) {
+        String sentenciaSql = "UPDATE prize SET prizenumber = ?, prizename = ?, prizeamount = ?, prizepercentage = ? WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, prizenumber);
+            sentencia.setString(2, Herramientas.formatVarchar50(prizename));
+            sentencia.setFloat(3, prizeamount);
+            sentencia.setFloat(4, Float.parseFloat(String.valueOf(prizepercentage).replaceAll("^\\s+|\\s+$", "")));
+            sentencia.setInt(5, prizeId);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
     }
 }
