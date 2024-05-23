@@ -12,7 +12,6 @@ public class Login extends JFrame {
     JLabel logo;
     JLabel Pass;
 
-    JMenuItem conexionItem;
     JMenuItem salirItem;
 
     public  Login(){
@@ -36,7 +35,6 @@ public class Login extends JFrame {
         JMenu menu = new JMenu("Archivo");
         salirItem = new JMenuItem("Salir");
         salirItem.setActionCommand("Salir");
-        menu.add(conexionItem);
         menu.add(salirItem);
         barra.add(menu);
         this.setJMenuBar(barra);

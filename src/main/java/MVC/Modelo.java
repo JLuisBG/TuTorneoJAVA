@@ -226,4 +226,22 @@ public class Modelo {
                 }
         }
     }
+    public void deletePrize(int prizeId) {
+        String sentenciaSql = "DELETE FROM prize WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, prizeId);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
 }

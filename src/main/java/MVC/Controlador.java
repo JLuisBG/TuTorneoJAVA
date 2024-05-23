@@ -89,7 +89,31 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 break;
 
             case "btnModPrize":
+                try {
+                    if (voidPrize()) {
+                        Herramientas.showErrorAlert("Rellena todos los campos");
+                        vista.tablePrize.clearSelection();
+                    } else {
+                        modelo.modPrize(
+                                Integer.parseInt(vista.tablePrize.getValueAt(vista.tablePrize.getSelectedRow(), 0).toString()),
+                                Integer.parseInt(vista.txtPrizeQty.getText()),
+                                vista.txtPrizeName.getText(),
+                                Float.parseFloat(vista.txtPrizeAmount.getText()),
+                                Float.parseFloat(vista.txtPrizePercentage.getText())
+                                );
+                    }
+                } catch (NumberFormatException nfe) {
+                    Herramientas.showErrorAlert("Introduce números en los campos que lo requieren");
+                    vista.tablePrize.clearSelection();
+                }
+                clearFieldPrizes();
+                updatePrize();
+                break;
 
+            case "btnDelPrize":
+                modelo.deletePrize(Integer.parseInt(vista.tablePrize.getValueAt(vista.tablePrize.getSelectedRow(), 0).toString()));
+                clearFieldPrizes();
+                updatePrize();
                 break;
 
             //TODO: Fill to make it takae the list of player, teams and tournaments
