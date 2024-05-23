@@ -21,11 +21,12 @@ public class Login extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        int width = screenSize.width * 2 / 3; // two-thirds of the screen width
-        int height = screenSize.height * 2 / 3; // two-thirds of the screen height
+        int width = screenSize.width *1/2; // two-thirds of the screen width
+        int height = screenSize.height  *3/ 5; // two-thirds of the screen height
         this.setSize(new Dimension(width, height));
         Email.setFont(new Font(Pass.getName(), Font.PLAIN, 20));
         Pass.setFont(new Font(Pass.getName(), Font.PLAIN, 20));
+        this.setResizable(false);
         this.setLocationRelativeTo(null);
         crearMenu();
         //setLogo();
