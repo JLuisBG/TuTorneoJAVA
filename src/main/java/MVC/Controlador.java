@@ -115,6 +115,35 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 clearFieldPrizes();
                 updatePrize();
                 break;
+                case    "btnDelPlayer":
+                    modelo.deletePlayer(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
+                    clearFieldPlayer();
+                    updatePlayer();
+                    break;
+            case "btnModPlayer":
+                try {
+                    if (voidPlayer()) {
+                        Herramientas.showErrorAlert("Rellena todos los campos");
+                        vista.tablePlayer.clearSelection();
+                    } else {
+                        modelo.modPlayer(
+                                Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()),
+                                Arrays.toString(vista.passFieldPlayer.getPassword()),
+                                vista.txtEmailPlayer.getText(),
+                                vista.txtFirstNamePlayer.getText(),
+                                vista.txtLastNamePlayer.getText(),
+                                vista.txtPhonePlayer.getText(),
+                                vista.btnEntryFeePaid.isSelected(),
+                                vista.datePickerPlayerBirth.getDate()
+                        );
+                    }
+                } catch (NumberFormatException nfe) {
+                    Herramientas.showErrorAlert("Introduce números en los campos que lo requieren");
+                    vista.tablePlayer.clearSelection();
+                }
+                clearFieldPlayer();
+                updatePlayer();
+                break;
 
             //TODO: Fill to make it takae the list of player, teams and tournaments
         }

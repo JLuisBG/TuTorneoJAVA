@@ -244,4 +244,50 @@ public class Modelo {
                 }
         }
     }
+
+    public void deletePlayer(int id) {
+        String sentenciaSql = "DELETE FROM players WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    public void modPlayer(int id, String pass, String email, String firstname, String lastname, String telephone, boolean isEntryFeePaid, LocalDate birthDate) {
+        String sentenciaSql = "UPDATE players set  pass = ?, email = ?, isentryfeepaid = ?, birthdate = ?, telephoneno = ?, firstname = ?, lastname = ? WHERE id = ?";
+        PreparedStatement sentencia = null;
+        String password = Herramientas.getSha256(pass);
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, password);
+            sentencia.setString(2, Herramientas.formatVarchar50(email) );
+            sentencia.setBoolean(3, isEntryFeePaid);
+            sentencia.setDate(4, Date.valueOf(birthDate));
+            sentencia.setInt(5, Herramientas.formatString9(telephone));
+            sentencia.setString(6, Herramientas.formatVarchar50(firstname));
+            sentencia.setString(7, Herramientas.formatVarchar50(lastname));
+            sentencia.setInt(8, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
 }
