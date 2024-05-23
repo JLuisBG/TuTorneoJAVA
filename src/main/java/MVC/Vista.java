@@ -67,8 +67,9 @@ public class Vista extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        this.setSize(new Dimension(this.getWidth() + 800, this.getHeight() - 200));
+        this.setSize(new Dimension(this.getWidth() +150, this.getHeight()+200));
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
         createMenu();
         setTableModels();
     }
