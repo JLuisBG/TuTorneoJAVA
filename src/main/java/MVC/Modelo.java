@@ -7,11 +7,9 @@ import org.hibernate.SessionFactory;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Properties;
 
 public class Modelo {
-    SessionFactory sessionFactory;
     private String ip;
     private String user;
     private String password;

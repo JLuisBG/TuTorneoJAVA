@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import java.awt.*;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,11 +21,20 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     private Modelo modelo;
     private boolean update;
     private FileInputStream fin;
+    private boolean isSelectedTeam;
+    private int selectedTeamId;
+    private boolean isSelectedTournament;
+    private int selectedTournamentId;
 
     public Controlador(Vista vista, Modelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
         this.conectado = true;
+        this.isSelectedTeam = false;
+        vista.btnAddPlayerTeam.setEnabled(false);
+        vista.btnDeleteTeamTournament.setEnabled(false);
+        vista.btnDelPlayerTeam.setEnabled(false);
+        vista.btnAddTeamTournament.setEnabled(false);
         modelo.conectar();
         addActionListeners(this);
         addWindowListeners(this);
