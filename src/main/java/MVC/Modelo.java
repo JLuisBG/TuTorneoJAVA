@@ -309,4 +309,16 @@ public class Modelo {
                 }
         }
     }
+    public ResultSet getTeam(){
+        String sentenciaSql = "SELECT * FROM team";
+        PreparedStatement sentencia = null;
+        ResultSet resultado = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            resultado = sentencia.executeQuery();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return resultado;
+    }
 }
