@@ -5,7 +5,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -22,6 +25,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     //private Login login;
     private Modelo modelo;
     private boolean update;
+    private FileInputStream fin;
 
     public Controlador(Vista vista, Modelo modelo) {
         this.vista = vista;
@@ -144,10 +148,30 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 clearFieldPlayer();
                 updatePlayer();
                 break;
+            case "btnImportLogo":
+                JFileChooser selectorFichero = Herramientas.crearSelectorFicheros(null, "Imagen", "jpg");
+                int opt = selectorFichero.showOpenDialog(null);
+                if (opt == JFileChooser.APPROVE_OPTION) {
+                    try {
+                         fin = new FileInputStream(selectorFichero.getSelectedFile()) ;
+                    } catch (FileNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                break;
+            case "btnAddTeam":
+                System.out.println("Entro");
+                if(vista.txtTeamName.getText().isEmpty() || vista.comboPlayers.getSelectedIndex() == -1){
+                    Herramientas.showErrorAlert("Rellena todos los campos");
+                } else {
+                    modelo.addTeam(vista.txtTeamName.getText(), fin);
+                }
+                break;
+
 
             //TODO: Fill to make it takae the list of player, teams and tournaments
         }
-        clearAllFields();
+        //clearAllFields();
         //updateField();
     }
 
@@ -316,11 +340,6 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             vista.comboPlayers.removeAllItems();
             for (int i = 0; i < vista.dtmPlayer.getRowCount(); i++) {
                 vista.comboPlayers.addItem(vista.dtmPlayer.getValueAt(i, 0) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 1) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 2) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 3) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 4) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 5) + "-"
                         + vista.dtmPlayer.getValueAt(0, 6) + "-"
                         + vista.dtmPlayer.getValueAt(0, 7));
 

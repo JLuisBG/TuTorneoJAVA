@@ -290,4 +290,23 @@ public class Modelo {
                 }
         }
     }
+    public void addTeam(String name, FileInputStream fin){
+        String sentenciaSql = "INSERT INTO team (name, logo) VALUES (?, ?)";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, Herramientas.formatVarchar50(name));
+            sentencia.setBinaryStream(2,fin,fin.available());
+            sentencia.executeUpdate();
+        } catch (SQLException | IOException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
 }
