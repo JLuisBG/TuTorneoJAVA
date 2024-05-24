@@ -321,4 +321,63 @@ public class Modelo {
         }
         return resultado;
     }
+
+    public void modTeam(int id, String nameText, FileInputStream fin) {
+        String sentenciaSql = "UPDATE team SET name = ?, logo = ? WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, Herramientas.formatVarchar50(nameText));
+            sentencia.setBinaryStream(2,fin,fin.available());
+            sentencia.setInt(3, id);
+            sentencia.executeUpdate();
+        } catch (SQLException | IOException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+    public void modTeam(int id, String nameText) {
+        String sentenciaSql = "UPDATE team SET name = ? WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, Herramientas.formatVarchar50(nameText));
+            sentencia.setInt(2, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    public void deleteTeam(int i) {
+        String sentenciaSql = "DELETE FROM team WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, i);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
 }

@@ -9,10 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -160,13 +157,34 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 }
                 break;
             case "btnAddTeam":
-                System.out.println("Entro");
-                if(vista.txtTeamName.getText().isEmpty() || vista.comboPlayers.getSelectedIndex() == -1){
+                if(vista.txtTeamName.getText().isEmpty()){
                     Herramientas.showErrorAlert("Rellena todos los campos");
                 } else {
                     modelo.addTeam(vista.txtTeamName.getText(), fin);
                 }
+                clearFieldTeam();
+                updateTeam();
                 break;
+            case "btnModTeam":
+                if(vista.txtTeamName.getText().isEmpty()){
+                    Herramientas.showErrorAlert("Rellena todos los campos");
+                } else {
+                   if(fin == null){
+                       modelo.modTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()), vista.txtTeamName.getText());
+                     } else {
+                    modelo.modTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()), vista.txtTeamName.getText(), fin);
+                    }
+                }
+                clearFieldTeam();
+                updateTeam();
+                break;
+                case "btnDelTeam":
+                    modelo.deleteTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
+                    clearFieldTeam();
+                    updateTeam();
+                    clearFieldTeam();
+                    updateTeam();
+                    break;
 
 
             //TODO: Fill to make it takae the list of player, teams and tournaments

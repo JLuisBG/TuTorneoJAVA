@@ -303,7 +303,7 @@
                   <forms/>
                 </constraints>
                 <properties>
-                  <actionCommand value="BtnModTeam"/>
+                  <actionCommand value="btnModTeam"/>
                   <background color="-16643264"/>
                   <foreground color="-855310"/>
                   <text value="Modificar"/>
