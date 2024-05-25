@@ -1,7 +1,5 @@
 package MVC;
 import BBDD.*;
-import org.hibernate.SessionFactory;
-
 
 
 import java.io.*;
@@ -366,6 +364,79 @@ public class Modelo {
         try {
             sentencia = conexion.prepareStatement(sentenciaSql);
             sentencia.setInt(1, i);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    public void addTournament(String nameText, int i) {
+        String sentenciaSql = "INSERT INTO tournament (tournamentname, prizeid) VALUES (?, ?)";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, Herramientas.formatVarchar50(nameText));
+            sentencia.setInt(2,Integer.valueOf(i));
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    public ResultSet getTournament() {
+        String sentenciaSql = "SELECT * FROM tournament";
+        PreparedStatement sentencia = null;
+        ResultSet resultado = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            resultado = sentencia.executeQuery();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return resultado;
+    }
+
+    public void deleteTournament(int i) {
+        String sentenciaSql = "DELETE FROM tournament WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, i);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    public void modTournament(int i, String text, Integer integer) {
+        String sentenciaSql = "UPDATE tournament SET tournamentname = ?, prizeid = ? WHERE id = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setString(1, Herramientas.formatVarchar50(text));
+            sentencia.setInt(2, integer);
+            sentencia.setInt(3, i);
             sentencia.executeUpdate();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
