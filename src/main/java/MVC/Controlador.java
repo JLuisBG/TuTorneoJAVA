@@ -250,9 +250,22 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     modelo.deletePlayerTeam(Integer.parseInt(vista.tablePlayerTeam.getValueAt(vista.tablePlayerTeam.getSelectedRow(), 0).toString()));
                     updatePlayerTeam();
                     break;
+            case "btnAddTeamTournament":
+                if (vista.comboTeam.getSelectedIndex() == -1) {
+                    Herramientas.showErrorAlert("Selecciona un equipo");
+                } else {
+                    String teamId = (String.valueOf(vista.comboTeam.getSelectedItem())).split("-")[0];
+                    modelo.addTeamTournament(Integer.parseInt(teamId), Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
+                    System.out.println("teamId: " + teamId + " tournamentId: " + vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString());
+                    updateTeamTournament();
+                }
+                break;
+                case "btnDeleteTeamTournament":
+                    modelo.deleteTeamTournament(Integer.parseInt(vista.tableTeamTournament.getValueAt(vista.tableTeamTournament.getSelectedRow(), 0).toString()));
+                    updateTeamTournament();
+                    break;
         }
-        //clearAllFields();
-        //updateField();
+
     }
 
 
@@ -422,6 +435,18 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         }
 
     }
+    /**
+     * Update the team tournament
+     */
+    private void updateTeamTournament() {
+        try {
+            vista.tableTeamTournament.setModel(buildTableModelTournamentTeam(modelo.getTeamTournament(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()))));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
     /**
@@ -435,12 +460,14 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         }
         vista.comboPrize.removeAllItems();
         for (int i = 0; i < vista.dtmPrize.getRowCount(); i++) {
-            vista.comboPrize.addItem((Integer) vista.tablePrize.getValueAt(i, 0));
+            vista.comboPrize.addItem(vista.dtmPrize.getValueAt(i, 0) + "-" +
+                    vista.dtmPrize.getValueAt(i, 2));
         }
         vista.comboPrize.setSelectedIndex(-1);
         vista.comboTeam.removeAllItems();
         for (int i = 0; i < vista.dtmTeam.getRowCount(); i++) {
-            vista.comboTeam.addItem((Integer) vista.tableTeam.getValueAt(i, 0));
+            vista.comboTeam.addItem(vista.dtmTeam.getValueAt(i, 0) + "-" +
+                    vista.dtmTeam.getValueAt(i, 1));
         }
         vista.comboTeam.setSelectedIndex(-1);
     }
@@ -579,6 +606,12 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         return vista.dtmTeam;
     }
 
+    /**
+     * Build the DTM for Player Team
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     private DefaultTableModel buildTableModelPlayerTeam(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         Vector<String> columnNames = new Vector<>();
@@ -592,6 +625,24 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         return vista.dtmPlayerTeam;
     }
 
+    /**
+     * Build the DTM for the Team Tournament Table
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    private DefaultTableModel buildTableModelTournamentTeam(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        Vector<String> columnNames = new Vector<>();
+        int columnCount = metaData.getColumnCount();
+        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+            columnNames.add(metaData.getColumnName(columnIndex));
+        }
+        Vector<Vector<Object>> data = new Vector<>();
+        setDataVector(rs, columnCount, data);
+        vista.dtmTeamTournament.setDataVector(data, columnNames);
+        return vista.dtmTeamTournament;
+    }
     /**
      * Refresh the tables
      *
@@ -609,7 +660,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             data.add(vector);
         }
     }
-    /*
+    /**
      * Muestra los atributos de un objeto seleccionado y los borra una vez se deselecciona
      * @param e Evento producido en una lista
      */
@@ -711,6 +762,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         int row = vista.tableTournament.getSelectedRow();
                         vista.txtTournamentName.setText(String.valueOf(vista.tableTournament.getValueAt(row, 1)));
                         vista.comboPrize.setSelectedItem(String.valueOf(vista.tableTournament.getValueAt(row, 2)));
+                        vista.btnAddTeamTournament.setEnabled(true);
+                        updateTeamTournament();
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -751,7 +804,33 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             }
 
         });
+        vista.tableTeamTournament.setCellSelectionEnabled(true);
+        ListSelectionModel cellSelectionModel6 = vista.tableTeamTournament.getSelectionModel();
+        cellSelectionModel6.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        cellSelectionModel6.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()
+                        && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
+                    if (e.getSource().equals(vista.tableTeamTournament.getSelectionModel())) {
+                        int row = vista.tableTeamTournament.getSelectedRow();
+                        vista.btnDeleteTeamTournament.setEnabled(true);
+                    } else if (e.getValueIsAdjusting()
+                            && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
+                        if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
+                            clearFieldPrizes();
+                        } else if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                            clearFieldPlayer();
+                        } else if (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
+                            clearFieldTeam();
+                        }
+                    }
+                }else {
+                    vista.btnDeleteTeamTournament.setEnabled(false);
+                }
+            }
+
+        });
     }
 
     /**

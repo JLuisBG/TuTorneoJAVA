@@ -690,4 +690,44 @@ public class Modelo {
         }
         return resultado;
     }
+/**
+     *Añade equipos al torneo
+     */
+    public void addTeamTournament(int teamId, int tournamentId) {
+        String sentenciaSql = "INSERT INTO teamtournament (teamid , tournamentid) VALUES (?, ?)";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, teamId);
+            sentencia.setInt(2,tournamentId);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+/**
+     * Devuelve un ResultSet con los equipos por torneo
+     * @return
+     */
+    public ResultSet getTeamTournament(int tournametId) {
+        String sentenciaSql = "SELECT * FROM team where id in (select teamid from teamtournament where tournamentid = ?)";
+
+        PreparedStatement sentencia = null;
+        ResultSet resultado = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, tournametId);
+            resultado = sentencia.executeQuery();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return resultado;
+    }
 }

@@ -672,7 +672,7 @@
                   <forms/>
                 </constraints>
                 <properties>
-                  <actionCommand value="btnAddTeam"/>
+                  <actionCommand value="btnAddTeamTournament"/>
                   <background color="-16643264"/>
                   <foreground color="-855310"/>
                   <text value="Añadir equipo"/>
@@ -684,6 +684,7 @@
                   <forms/>
                 </constraints>
                 <properties>
+                  <actionCommand value="btnDeleteTeamTournament"/>
                   <background color="-16643264"/>
                   <foreground color="-855310"/>
                   <text value="Eliminar equipo"/>
