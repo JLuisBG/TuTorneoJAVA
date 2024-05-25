@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,7 +15,9 @@ import java.util.Vector;
 
 import BBDD.*;
 
-
+/**
+ * Esta clase es el controlador de la aplicación
+ */
 public class Controlador implements ActionListener, ItemListener, ListSelectionListener, WindowListener {
     private boolean conectado;
     private Vista vista;
@@ -27,6 +30,12 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     private boolean isSelectedTournament;
     private int selectedTournamentId;
 
+    /**
+     * Constructor de la clase Controlador
+     *
+     * @param vista
+     * @param modelo
+     */
     public Controlador(Vista vista, Modelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
@@ -46,7 +55,11 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         //this.login = new Login();
     }
 
-
+    /**
+     * Método que se encarga de procesar los eventos
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         String comando = e.getActionCommand();
@@ -109,7 +122,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                                 vista.txtPrizeName.getText(),
                                 Float.parseFloat(vista.txtPrizeAmount.getText()),
                                 Float.parseFloat(vista.txtPrizePercentage.getText())
-                                );
+                        );
                     }
                 } catch (NumberFormatException nfe) {
                     Herramientas.showErrorAlert("Introduce números en los campos que lo requieren");
@@ -124,11 +137,12 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 clearFieldPrizes();
                 updatePrize();
                 break;
-                case    "btnDelPlayer":
-                    modelo.deletePlayer(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
-                    clearFieldPlayer();
-                    updatePlayer();
-                    break;
+            case "btnDelPlayer":
+                modelo.deletePlayer(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
+                modelo.deletePlayerTeam(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
+                clearFieldPlayer();
+                updatePlayer();
+                break;
             case "btnModPlayer":
                 try {
                     if (voidPlayer()) {
@@ -158,14 +172,14 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 int opt = selectorFichero.showOpenDialog(null);
                 if (opt == JFileChooser.APPROVE_OPTION) {
                     try {
-                         fin = new FileInputStream(selectorFichero.getSelectedFile()) ;
+                        fin = new FileInputStream(selectorFichero.getSelectedFile());
                     } catch (FileNotFoundException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
                 break;
             case "btnAddTeam":
-                if(vista.txtTeamName.getText().isEmpty()){
+                if (vista.txtTeamName.getText().isEmpty()) {
                     Herramientas.showErrorAlert("Rellena todos los campos");
                 } else {
                     modelo.addTeam(vista.txtTeamName.getText(), fin);
@@ -174,13 +188,13 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 updateTeam();
                 break;
             case "btnModTeam":
-                if(vista.txtTeamName.getText().isEmpty()){
+                if (vista.txtTeamName.getText().isEmpty()) {
                     Herramientas.showErrorAlert("Rellena todos los campos");
                 } else {
-                   if(fin == null){
-                       modelo.modTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()), vista.txtTeamName.getText());
-                     } else {
-                    modelo.modTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()), vista.txtTeamName.getText(), fin);
+                    if (fin == null) {
+                        modelo.modTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()), vista.txtTeamName.getText());
+                    } else {
+                        modelo.modTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()), vista.txtTeamName.getText(), fin);
                     }
                 }
                 clearFieldTeam();
@@ -188,31 +202,34 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 break;
             case "btnDelTeam":
                 modelo.deleteTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
+                modelo.deleteTeamPlayer(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
+                modelo.deleteTeamTournament(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
                 clearFieldTeam();
                 updateTeam();
                 break;
             case "btnAddTournament":
-                if(vista.txtTournamentName.getText().isEmpty() || vista.comboPrize.getSelectedIndex() == -1){
+                if (vista.txtTournamentName.getText().isEmpty() || vista.comboPrize.getSelectedIndex() == -1) {
                     Herramientas.showErrorAlert("Rellena todos los campos");
                 } else {
-                    String prizeId= (String.valueOf(vista.comboPrize.getSelectedItem())).split("-")[0];
+                    String prizeId = (String.valueOf(vista.comboPrize.getSelectedItem())).split("-")[0];
                     modelo.addTournament(vista.txtTournamentName.getText(),
                             Integer.valueOf(prizeId));
                 }
                 clearFieldTournament();
                 updateTournament();
                 break;
-                case "btnDelTournament":
-                    modelo.deleteTournament(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
-                    clearFieldTournament();
-                    updateTournament();
-                    break;
+            case "btnDelTournament":
+                modelo.deleteTournament(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
+                modelo.deleteTournamentTeam(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
+                clearFieldTournament();
+                updateTournament();
+                break;
 
             case "btnModTournament":
-                if(vista.txtTournamentName.getText().isEmpty() || vista.comboPrize.getSelectedIndex() == -1){
+                if (vista.txtTournamentName.getText().isEmpty() || vista.comboPrize.getSelectedIndex() == -1) {
                     Herramientas.showErrorAlert("Rellena todos los campos");
                 } else {
-                    String prizeId= (String.valueOf(vista.comboPrize.getSelectedItem())).split("-")[0];
+                    String prizeId = (String.valueOf(vista.comboPrize.getSelectedItem())).split("-")[0];
                     modelo.modTournament(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()),
                             vista.txtTournamentName.getText(),
                             Integer.valueOf(prizeId));
@@ -220,9 +237,16 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 clearFieldTournament();
                 updateTournament();
                 break;
+            case "btnAddPlayerTeam":
+                if (vista.comboPlayers.getSelectedIndex() == -1) {
+                    Herramientas.showErrorAlert("Selecciona un jugador");
+                } else {
+                    String playerId = (String.valueOf(vista.comboPlayers.getSelectedItem())).split("-")[0];
+                    modelo.addPlayerTeam(Integer.parseInt(playerId), Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
+                    updatePlayerTeam();
+                }
 
-
-            //TODO: Fill to make it takae the list of player, teams and tournaments
+                break;
         }
         //clearAllFields();
         //updateField();
@@ -384,6 +408,22 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         updateTournament();
     }
 
+    /**
+     * Update the player team
+     */
+    private void updatePlayerTeam() {
+        try {
+            vista.tablePlayerTeam.setModel(buildTableModelPlayerTeam(modelo.getTeamPlayer(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()))));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * Refresh the tournament table
+     */
     private void updateTournament() {
         try {
             vista.tableTournament.setModel(buildTableModelTournament(modelo.getTournament()));
@@ -391,30 +431,37 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             throw new RuntimeException(e);
         }
         vista.comboPrize.removeAllItems();
-        for(int i = 0; i < vista.dtmPrize.getRowCount(); i++){
+        for (int i = 0; i < vista.dtmPrize.getRowCount(); i++) {
             vista.comboPrize.addItem((Integer) vista.tablePrize.getValueAt(i, 0));
         }
         vista.comboPrize.setSelectedIndex(-1);
         vista.comboTeam.removeAllItems();
-        for(int i = 0; i < vista.dtmTeam.getRowCount(); i++){
+        for (int i = 0; i < vista.dtmTeam.getRowCount(); i++) {
             vista.comboTeam.addItem((Integer) vista.tableTeam.getValueAt(i, 0));
         }
         vista.comboTeam.setSelectedIndex(-1);
     }
 
+    /**
+     * Refresh the team table
+     */
+
     private void updateTeam() {
-        try{
+        try {
             vista.tableTeam.setModel(buildTableModelTeam(modelo.getTeam()));
             vista.comboTeam.removeAllItems();
             for (int i = 0; i < vista.dtmTeam.getRowCount(); i++) {
-                vista.comboTeam.addItem(vista.dtmTeam.getValueAt(i, 0) +"-"+
-                                        vista.dtmTeam.getValueAt(i, 1));
+                vista.comboTeam.addItem(vista.dtmTeam.getValueAt(i, 0) + "-" +
+                        vista.dtmTeam.getValueAt(i, 1));
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Refresh the player table
+     */
     private void updatePlayer() {
         try {
             vista.tablePlayer.setModel(buildTableModelPlayer(modelo.getPlayer()));
@@ -429,6 +476,14 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             e.printStackTrace();
         }
     }
+
+    /**
+     * Build the DTM for the Tournament Table
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     private DefaultTableModel buildTableModelTournament(ResultSet rs) throws SQLException {
         Vector<String> columnNames = new Vector<>();
 
@@ -443,6 +498,13 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         return vista.dtmTournament;
     }
 
+    /**
+     * Build the DTM for the Player Table
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     private DefaultTableModel buildTableModelPlayer(ResultSet rs) throws SQLException {
         Vector<String> columnNames = new Vector<>();
 
@@ -466,8 +528,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             vista.tablePrize.setModel(buildTableModelPrize(modelo.getPrize()));
             vista.comboPrize.removeAllItems();
             for (int i = 0; i < vista.dtmPrize.getRowCount(); i++) {
-                vista.comboPrize.addItem(vista.dtmPrize.getValueAt(i, 0)+"-"+
-                vista.dtmPrize.getValueAt(i, 2)) ;
+                vista.comboPrize.addItem(vista.dtmPrize.getValueAt(i, 0) + "-" +
+                        vista.dtmPrize.getValueAt(i, 2));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -493,6 +555,14 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         vista.dtmPrize.setDataVector(data, columnNames);
         return vista.dtmPrize;
     }
+
+    /**
+     * Build the DTM for the Team Table
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     private DefaultTableModel buildTableModelTeam(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         Vector<String> columnNames = new Vector<>();
@@ -505,6 +575,20 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         vista.dtmTeam.setDataVector(data, columnNames);
         return vista.dtmTeam;
     }
+
+    private DefaultTableModel buildTableModelPlayerTeam(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        Vector<String> columnNames = new Vector<>();
+        int columnCount = metaData.getColumnCount();
+        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+            columnNames.add(metaData.getColumnName(columnIndex));
+        }
+        Vector<Vector<Object>> data = new Vector<>();
+        setDataVector(rs, columnCount, data);
+        vista.dtmPlayerTeam.setDataVector(data, columnNames);
+        return vista.dtmPlayerTeam;
+    }
+
     /**
      * Refresh the tables
      *
@@ -556,14 +640,14 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             }
         });
         vista.tablePlayer.setCellSelectionEnabled(true);
-        ListSelectionModel cellSelectionModel2 =  vista.tablePlayer.getSelectionModel();
+        ListSelectionModel cellSelectionModel2 = vista.tablePlayer.getSelectionModel();
         cellSelectionModel2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         cellSelectionModel2.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
-                    if  (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                    if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
                         int row = vista.tablePlayer.getSelectedRow();
                         vista.txtFirstNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 6)));
                         vista.txtLastNamePlayer.setText(String.valueOf(vista.tablePlayer.getValueAt(row, 7)));
@@ -586,7 +670,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             }
         });
         vista.tableTeam.setCellSelectionEnabled(true);
-        ListSelectionModel cellSelectionModel3 =  vista.tableTeam.getSelectionModel();
+        ListSelectionModel cellSelectionModel3 = vista.tableTeam.getSelectionModel();
         cellSelectionModel3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         cellSelectionModel3.addListSelectionListener(new ListSelectionListener() {
@@ -594,9 +678,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
 
                 if (!e.getValueIsAdjusting()
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
-                    if  (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
+                    if (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
                         int row = vista.tableTeam.getSelectedRow();
                         vista.txtTeamName.setText(String.valueOf(vista.tableTeam.getValueAt(row, 1)));
+                        updatePlayerTeam();
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty() && !update) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -608,10 +693,11 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         }
                     }
                 }
+                vista.btnAddPlayerTeam.setEnabled(true);
             }
         });
         vista.tableTournament.setCellSelectionEnabled(true);
-        ListSelectionModel cellSelectionModel4 =  vista.tableTournament.getSelectionModel();
+        ListSelectionModel cellSelectionModel4 = vista.tableTournament.getSelectionModel();
         cellSelectionModel4.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         cellSelectionModel4.addListSelectionListener(new ListSelectionListener() {
@@ -622,7 +708,30 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         int row = vista.tableTournament.getSelectedRow();
                         vista.txtTournamentName.setText(String.valueOf(vista.tableTournament.getValueAt(row, 1)));
                         vista.comboPrize.setSelectedItem(String.valueOf(vista.tableTournament.getValueAt(row, 2)));
-                        System.out.println(vista.tableTournament.getValueAt(row, 2));
+                    } else if (e.getValueIsAdjusting()
+                            && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
+                        if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
+                            clearFieldPrizes();
+                        } else if (e.getSource().equals(vista.tablePlayer.getSelectionModel())) {
+                            clearFieldPlayer();
+                        } else if (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
+                            clearFieldTeam();
+                        }
+                    }
+                }
+            }
+        });
+        vista.tablePlayerTeam.setCellSelectionEnabled(true);
+        ListSelectionModel cellSelectionModel5 = vista.tablePlayerTeam.getSelectionModel();
+        cellSelectionModel5.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        cellSelectionModel5.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()
+                        && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
+                    if (e.getSource().equals(vista.tablePlayerTeam.getSelectionModel())) {
+                        int row = vista.tablePlayerTeam.getSelectedRow();
+                        //TODO: Hacer posible la inserción en la base de datos
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -638,6 +747,11 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         });
     }
 
+    /**
+     * Handle the selection of a row in a table
+     *
+     * @param e the event that characterizes the change.
+     */
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {

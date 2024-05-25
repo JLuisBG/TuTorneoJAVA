@@ -7,6 +7,9 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.Properties;
 
+/**
+ * Esta es una clase que me crea la ventana de login
+ */
 public class Modelo {
     private String ip;
     private String user;
@@ -29,6 +32,10 @@ public class Modelo {
     }
 
     private Connection conexion;
+
+    /**
+     * Constructor de la clase Modelo
+     */
     public Modelo() {
         getPropValues();
     }
@@ -56,6 +63,9 @@ public class Modelo {
             }
         }
     }
+    /**
+     * Conecta la base de datos
+     */
     void conectar() {
 
         try {
@@ -83,6 +93,11 @@ public class Modelo {
         }
     }
 
+    /**
+     * Lee el fichero de la base de datos
+     * @return
+     * @throws IOException
+     */
     private String leerFichero() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("basedatos_java.sql")) ;
         String linea;
@@ -94,6 +109,9 @@ public class Modelo {
 
         return stringBuilder.toString();
     }
+    /**
+     * Desconecta la base de datos
+     */
 
     void desconectar() {
         try {
@@ -130,6 +148,10 @@ public class Modelo {
         this.password = pass;
         this.adminPassword = adminPass;
     }
+    /**
+     * Añade un premio
+     * @param nuevoPrize
+     */
     public void altaPrize(Prize nuevoPrize) {
         String sentenciaSql = "INSERT INTO prize (prizenumber, prizename, prizeamount, prizepercentage) VALUES (?, ?, ?, ?)";
         PreparedStatement sentencia = null;
@@ -152,6 +174,16 @@ public class Modelo {
                 }
         }
     }
+    /**
+     * Añade un jugador
+     * @param pass
+     * @param email
+     * @param isEntryFeePaid
+     * @param birthdate
+     * @param telephoneno
+     * @param firstname
+     * @param lastname
+     */
     public void altaPlayer(String pass, String email, boolean isEntryFeePaid, LocalDate birthdate, String telephoneno, String firstname, String lastname) {
         String sentenciaSql = "INSERT INTO players (pass, email, isentryfeepaid, birthdate, telephoneno, firstname, lastname) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement sentencia = null;
@@ -177,7 +209,10 @@ public class Modelo {
                 }
         }
     }
-
+/**
+     * Devuelve un ResultSet con los premios
+     * @return
+     */
     public ResultSet getPrize() throws SQLException {
         String sentenciaSql = "SELECT id as 'ID Prize', " +
                 "prizenumber as 'Numero', " +
@@ -191,7 +226,10 @@ public class Modelo {
         resultado = sentencia.executeQuery();
         return resultado;
     }
-
+/**
+     * Devuelve un ResultSet con los jugadores
+     * @return
+     */
     public ResultSet getPlayer() throws SQLException {
         String sentenciaSql = "SELECT * FROM players";
         PreparedStatement sentencia = null;
@@ -200,6 +238,10 @@ public class Modelo {
         resultado = sentencia.executeQuery();
         return resultado;
     }
+    /**
+     * Devuelve un ResultSet con los equipos
+     * @return
+     */
     public void modPrize(int prizeId, int prizenumber, String prizename, float prizeamount, float prizepercentage) {
         String sentenciaSql = "UPDATE prize SET prizenumber = ?, prizename = ?, prizeamount = ?, prizepercentage = ? WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -222,6 +264,11 @@ public class Modelo {
                 }
         }
     }
+
+    /**
+     * Borra un premio
+     * @param prizeId
+     */
     public void deletePrize(int prizeId) {
         String sentenciaSql = "DELETE FROM prize WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -241,6 +288,10 @@ public class Modelo {
         }
     }
 
+    /**
+     * Borra un jugador
+     * @param id
+     */
     public void deletePlayer(int id) {
         String sentenciaSql = "DELETE FROM players WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -260,6 +311,109 @@ public class Modelo {
         }
     }
 
+    /**
+     * Borra un jugador de un equipo
+     * @param id
+     */
+    public void deletePlayerTeam(int id) {
+        String sentenciaSql = "DELETE FROM playerteam WHERE playerid = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    /**
+     * Borra la relacion de equipos jugadores
+     * @param id
+     */
+    public void deleteTeamPlayer(int id) {
+        String sentenciaSql = "DELETE FROM playerteam WHERE teamid = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    /**
+     * Borra la relacion de equipos torneos
+     * @param id
+     */
+    public void deleteTeamTournament(int id) {
+        String sentenciaSql = "DELETE FROM teamtournament WHERE teamid = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    /**
+     * Borra un torneo y sus relaciones
+     * @param id
+     */
+    public void deleteTournamentTeam(int id) {
+        String sentenciaSql = "DELETE FROM teamtournament WHERE tournamentid = ?";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, id);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    /**
+     * Modifica un jugador
+     * @param id
+     * @param pass
+     * @param email
+     * @param firstname
+     * @param lastname
+     * @param telephone
+     * @param isEntryFeePaid
+     * @param birthDate
+     */
     public void modPlayer(int id, String pass, String email, String firstname, String lastname, String telephone, boolean isEntryFeePaid, LocalDate birthDate) {
         String sentenciaSql = "UPDATE players set  pass = ?, email = ?, isentryfeepaid = ?, birthdate = ?, telephoneno = ?, firstname = ?, lastname = ? WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -286,6 +440,10 @@ public class Modelo {
                 }
         }
     }
+    /**
+     * Añade un equipo
+     * @param name
+     */
     public void addTeam(String name, FileInputStream fin){
         String sentenciaSql = "INSERT INTO team (name, logo) VALUES (?, ?)";
         PreparedStatement sentencia = null;
@@ -305,6 +463,10 @@ public class Modelo {
                 }
         }
     }
+    /**
+     * Añade un equipo
+     * @param name
+     */
     public ResultSet getTeam(){
         String sentenciaSql = "SELECT * FROM team";
         PreparedStatement sentencia = null;
@@ -318,6 +480,12 @@ public class Modelo {
         return resultado;
     }
 
+    /**
+     * Modifica un equipo
+     * @param id
+     * @param nameText
+     * @param fin
+     */
     public void modTeam(int id, String nameText, FileInputStream fin) {
         String sentenciaSql = "UPDATE team SET name = ?, logo = ? WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -338,6 +506,12 @@ public class Modelo {
                 }
         }
     }
+
+    /**
+     * Modifica un equipo
+     * @param id
+     * @param nameText
+     */
     public void modTeam(int id, String nameText) {
         String sentenciaSql = "UPDATE team SET name = ? WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -358,6 +532,10 @@ public class Modelo {
         }
     }
 
+    /**
+     * Borra un equipo
+     * @param i
+     */
     public void deleteTeam(int i) {
         String sentenciaSql = "DELETE FROM team WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -377,6 +555,11 @@ public class Modelo {
         }
     }
 
+    /**
+     *  Añade un jugador a un equipo
+     * @param nameText
+     * @param i
+     */
     public void addTournament(String nameText, int i) {
         String sentenciaSql = "INSERT INTO tournament (tournamentname, prizeid) VALUES (?, ?)";
         PreparedStatement sentencia = null;
@@ -397,6 +580,10 @@ public class Modelo {
         }
     }
 
+    /**
+     * Devuelve un ResultSet con los torneos
+     * @return
+     */
     public ResultSet getTournament() {
         String sentenciaSql = "SELECT * FROM tournament";
         PreparedStatement sentencia = null;
@@ -410,6 +597,10 @@ public class Modelo {
         return resultado;
     }
 
+    /**
+     * Borra un torneo
+     * @param i
+     */
     public void deleteTournament(int i) {
         String sentenciaSql = "DELETE FROM tournament WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -429,6 +620,12 @@ public class Modelo {
         }
     }
 
+    /**
+     * Modifica un torneo
+     * @param i
+     * @param text
+     * @param integer
+     */
     public void modTournament(int i, String text, Integer integer) {
         String sentenciaSql = "UPDATE tournament SET tournamentname = ?, prizeid = ? WHERE id = ?";
         PreparedStatement sentencia = null;
@@ -448,5 +645,49 @@ public class Modelo {
                     sqle.printStackTrace();
                 }
         }
+    }
+
+    /**
+     * Añade un jugador a un equipo
+     * @param playerId
+     * @param teamId
+     */
+    public void addPlayerTeam(int playerId, int teamId) {
+        String sentenciaSql = "INSERT INTO playerteam (playerid , teamid) VALUES (?, ?)";
+        PreparedStatement sentencia = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, playerId);
+            sentencia.setInt(2,teamId);
+            sentencia.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            if (sentencia != null)
+                try {
+                    sentencia.close();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+        }
+    }
+
+    /**
+     * Devuelve un ResultSet con los jugadores por equipo
+     * @return
+     */
+    public ResultSet getTeamPlayer(int teamid) {
+        String sentenciaSql = "SELECT * FROM players where id in (select playerid from playerteam where teamid = ?)";
+
+        PreparedStatement sentencia = null;
+        ResultSet resultado = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            sentencia.setInt(1, teamid);
+            resultado = sentencia.executeQuery();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return resultado;
     }
 }

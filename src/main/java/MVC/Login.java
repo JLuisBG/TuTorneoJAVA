@@ -3,6 +3,10 @@ package MVC;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Esta es una clase que me crea la ventana de login
+
+ */
 public class Login extends JFrame {
     private JPanel panel1;
     JLabel Email;
@@ -14,6 +18,9 @@ public class Login extends JFrame {
 
     JMenuItem salirItem;
 
+    /**
+     * Este es el constructor de la clase Login
+     */
     public  Login(){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setContentPane(panel1);
@@ -30,6 +37,10 @@ public class Login extends JFrame {
         crearMenu();
         //setLogo();
     }
+
+    /**
+     * Este método me crea el menú de la ventana de login
+     */
     private void crearMenu() {
         JMenuBar barra = new JMenuBar();
         JMenu menu = new JMenu("Archivo");
