@@ -245,8 +245,11 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     modelo.addPlayerTeam(Integer.parseInt(playerId), Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
                     updatePlayerTeam();
                 }
-
                 break;
+                case "btnDeletePlayerTeam":
+                    modelo.deletePlayerTeam(Integer.parseInt(vista.tablePlayerTeam.getValueAt(vista.tablePlayerTeam.getSelectedRow(), 0).toString()));
+                    updatePlayerTeam();
+                    break;
         }
         //clearAllFields();
         //updateField();
@@ -731,7 +734,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                     if (e.getSource().equals(vista.tablePlayerTeam.getSelectionModel())) {
                         int row = vista.tablePlayerTeam.getSelectedRow();
-                        //TODO: Hacer posible la inserción en la base de datos
+                        vista.btnDelPlayerTeam.setEnabled(true);
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -742,9 +745,13 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                             clearFieldTeam();
                         }
                     }
+                }else {
+                    vista.btnDelPlayerTeam.setEnabled(false);
                 }
             }
+
         });
+
     }
 
     /**
