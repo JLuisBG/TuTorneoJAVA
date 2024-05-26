@@ -73,6 +73,7 @@
           <forms/>
         </constraints>
         <properties>
+          <actionCommand value="btnLogin"/>
           <background color="-16709850"/>
           <foreground color="-8947572"/>
           <text value="Iniciar"/>

@@ -19,14 +19,11 @@ import BBDD.*;
 public class Controlador implements ActionListener, ItemListener, ListSelectionListener, WindowListener {
     private boolean conectado;
     private Vista vista;
-    //private Login login;
+    private Login login;
     private Modelo modelo;
     private boolean update;
     private FileInputStream fin;
-    private boolean isSelectedTeam;
-    private int selectedTeamId;
-    private boolean isSelectedTournament;
-    private int selectedTournamentId;
+    private boolean isAdmin;
 
     /**
      * Constructor de la clase Controlador
@@ -34,11 +31,12 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
      * @param vista
      * @param modelo
      */
-    public Controlador(Vista vista, Modelo modelo) {
+    public Controlador(Vista vista, Modelo modelo, Login login) {
         this.vista = vista;
         this.modelo = modelo;
+        this.login = login;
         this.conectado = true;
-        this.isSelectedTeam = false;
+        this.isAdmin = false;
         vista.btnAddPlayerTeam.setEnabled(false);
         vista.btnDeleteTeamTournament.setEnabled(false);
         vista.btnDelPlayerTeam.setEnabled(false);
@@ -49,8 +47,6 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         clearAllFields();
         uppdateAll();
         initAll();
-
-        //this.login = new Login();
     }
 
     /**
@@ -73,8 +69,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 System.exit(0);
                 break;
             case "Desconectar":
-                modelo.desconectar();
-                conectado = false;
+                vista.setVisible(false);
+                login.setVisible(true);
                 break;
             case "btnAddPrize":
                 if (voidPrize()) {
@@ -266,9 +262,19 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 Jasper.reportPlayers();
                 break;
             case "ListarEquipos":
-                System.out.println("Entro listar jugadores");
                 Jasper.reportTeams();
                 break;
+
+                case "btnLogin":
+                if (modelo.comprobarAdmin(login.txtEmailLogin.getText(), login.passfieldLogin.getPassword())) {
+                     loginAsAdmin();
+                }else if(modelo.comprobarUsuario(login.txtEmailLogin.getText(), login.passfieldLogin.getPassword())){
+                    loginAsUser();
+                }
+                else {
+                    Herramientas.showWarningAlert("Usuario o contraseña incorrectos");
+                }
+                    break;
 
         }
 
@@ -361,7 +367,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         vista.btnModTournament.addActionListener(controlador);
         vista.btnModTeam.addActionListener(controlador);
         vista.btnImportLogo.addActionListener(controlador);
-        //login.btnLogin.addActionListener(controlador);
+        login.btnLogin.addActionListener(controlador);
 
     }
 
@@ -759,7 +765,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         }
                     }
                 }
-                vista.btnAddPlayerTeam.setEnabled(true);
+                if(isAdmin){
+                    vista.btnAddPlayerTeam.setEnabled(true);
+                }
+
             }
         });
         vista.tableTournament.setCellSelectionEnabled(true);
@@ -774,7 +783,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         int row = vista.tableTournament.getSelectedRow();
                         vista.txtTournamentName.setText(String.valueOf(vista.tableTournament.getValueAt(row, 1)));
                         vista.comboPrize.setSelectedItem(String.valueOf(vista.tableTournament.getValueAt(row, 2)));
-                        vista.btnAddTeamTournament.setEnabled(true);
+                        if (isAdmin) {
+                            vista.btnAddTeamTournament.setEnabled(true);
+                        }
                         updateTeamTournament();
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
@@ -799,7 +810,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                     if (e.getSource().equals(vista.tablePlayerTeam.getSelectionModel())) {
                         int row = vista.tablePlayerTeam.getSelectedRow();
-                        vista.btnDelPlayerTeam.setEnabled(true);
+                        if(isAdmin) {
+                            vista.btnDelPlayerTeam.setEnabled(true);
+                        }
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -826,7 +839,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                     if (e.getSource().equals(vista.tableTeamTournament.getSelectionModel())) {
                         int row = vista.tableTeamTournament.getSelectedRow();
-                        vista.btnDeleteTeamTournament.setEnabled(true);
+                        if(isAdmin){
+                            vista.btnDeleteTeamTournament.setEnabled(true);
+                        }
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -874,12 +889,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
 
             } else if (e.getSource().equals(vista.tablePlayerTeam.getSelectionModel())) {
                 int row = vista.tablePlayerTeam.getSelectedRow();
-                // Handle selection in player-team table
-                // Fill the appropriate fields if necessary
             } else if (e.getSource().equals(vista.tableTeamTournament.getSelectionModel())) {
                 int row = vista.tableTeamTournament.getSelectedRow();
-                // Handle selection in team-tournament table
-                // Fill the appropriate fields if necessary
             } else if (e.getSource().equals(vista.tableTournament.getSelectionModel())) {
                 int row = vista.tableTournament.getSelectedRow();
                 vista.txtTournamentName.setText(String.valueOf(vista.tableTournament.getValueAt(row, 0)));
@@ -894,12 +905,61 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             } else if (e.getSource().equals(vista.tableTeam.getSelectionModel())) {
                 clearFieldTeam();
             } else if (e.getSource().equals(vista.tablePlayerTeam.getSelectionModel())) {
-                // Clear fields related to player-team
             } else if (e.getSource().equals(vista.tableTeamTournament.getSelectionModel())) {
-                // Clear fields related to team-tournament
             } else if (e.getSource().equals(vista.tableTournament.getSelectionModel())) {
                 clearFieldTournament();
             }
         }
+    }
+    /**
+     * Limpiar los campos de login
+     *
+     */
+    public void clearFieldLogin(){
+        login.txtEmailLogin.setText("");
+        login.passfieldLogin.setText("");
+    }
+ /**
+     * Método que se encarga de procesar los eventos para logearse como administrador
+     *
+     */
+    public void loginAsAdmin() {
+        login.setVisible(false);
+        vista.setVisible(true);
+        this.isAdmin = true;
+        setEnabledAllButtons(true);
+        clearFieldLogin();
+
+    }
+
+    /**
+     * Método que se encarga de procesar los eventos para logearse como usuario
+     */
+    public void loginAsUser(){
+        this.isAdmin = false;
+        login.setVisible(false);
+        vista.setVisible(true);
+        setEnabledAllButtons(false);
+        clearFieldLogin();
+    }
+
+    /**
+     * Método que se encarga de procesar los eventos para logearse
+     * @param state
+     */
+    public void setEnabledAllButtons(boolean state){
+        vista.btnAddTeam.setEnabled(state);
+        vista.btnAddPrize.setEnabled(state);
+        vista.btnAddTournament.setEnabled(state);
+        vista.btnAddPlayer.setEnabled(state);
+        vista.btnDelPlayer.setEnabled(state);
+        vista.btnDelPrize.setEnabled(state);
+        vista.btnDelTournametn.setEnabled(state);
+        vista.btnDelTeam.setEnabled(state);;
+        vista.btnModPlayer.setEnabled(state);
+        vista.btnModPrize.setEnabled(state);
+        vista.btnModTournament.setEnabled(state);
+        vista.btnModTeam.setEnabled(state);
+        vista.btnImportLogo.setEnabled(state);
     }
 }

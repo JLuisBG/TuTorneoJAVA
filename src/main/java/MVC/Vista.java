@@ -70,7 +70,7 @@ public class Vista extends JFrame {
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-        this.setVisible(true);
+        this.setVisible(false);//TODO: Cuidado visibilidad
         this.setSize(new Dimension(this.getWidth() + 150, this.getHeight() + 200));
         this.setLocationRelativeTo(null);
         this.setResizable(false);

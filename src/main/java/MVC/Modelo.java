@@ -5,6 +5,7 @@ import BBDD.*;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -758,5 +759,51 @@ public class Modelo {
             sqle.printStackTrace();
         }
         return resultado;
+    }
+
+    /**
+     * Devuelve un ResultSet con los equipos por torneo
+     * @param email
+     * @param password
+     * @return boolean
+     */
+    public boolean comprobarAdmin(String email, char[] password) {
+        String checkAdmin = "SELECT CheckAdminExists(?,?)";
+        String pass = Herramientas.getSha256(Arrays.toString(password));
+        System.out.println("email: "+email);
+        System.out.println("pass: "+pass);
+        PreparedStatement function;
+        boolean nameExists = false;
+        try {
+            function = conexion.prepareStatement(checkAdmin);
+            function.setString(1, email);
+            function.setString(2, pass);
+            ResultSet rs = function.executeQuery();
+            rs.next();
+
+            nameExists = rs.getBoolean(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nameExists;
+    }
+
+    public boolean comprobarUsuario(String email, char[] password) {
+        String checkAdmin = "SELECT CheckUserExists(?,?)";
+        String pass = Herramientas.getSha256(Arrays.toString(password));
+        PreparedStatement function;
+        boolean nameExists = false;
+        try {
+            function = conexion.prepareStatement(checkAdmin);
+            function.setString(1, email);
+            function.setString(2, pass);
+            ResultSet rs = function.executeQuery();
+            rs.next();
+
+            nameExists = rs.getBoolean(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nameExists;
     }
 }

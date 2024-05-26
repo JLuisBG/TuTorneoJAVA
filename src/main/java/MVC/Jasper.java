@@ -10,28 +10,33 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 
 public class Jasper {
-public static void reportPlayers(){
-    Modelo modelo = new Modelo();
-    try {
-        JasperDesign design = JRXmlLoader.load("src/main/resources/Players.jrxml");
-        JasperReport report = JasperCompileManager.compileReport(design);
-        JasperPrint print = JasperFillManager.fillReport(report,null,modelo.conexion());
-        JasperViewer.viewReport(print,false);
-    } catch (JRException e) {
-        throw new RuntimeException(e);
-    }
-}
-    public static void reportTeams(){
+    /**
+     * Genera un ticket de compra en formato PDF para el numero de pedido proporcionado.
+     */
+    public static void reportPlayers() {
         Modelo modelo = new Modelo();
         try {
-            JasperDesign design = JRXmlLoader.load("src/main/resources/teams.jrxml");
+            JasperDesign design = JRXmlLoader.load("src/main/resources/Players.jrxml");
             JasperReport report = JasperCompileManager.compileReport(design);
-            JasperPrint print = JasperFillManager.fillReport(report,null,modelo.conexion());
-            JasperViewer.viewReport(print,false);
+            JasperPrint print = JasperFillManager.fillReport(report, null, modelo.conexion());
+            JasperViewer.viewReport(print, false);
         } catch (JRException e) {
             throw new RuntimeException(e);
         }
     }
 
-
+    /**
+     * Genera un ticket de compra en formato PDF para el numero de pedido proporcionado.
+     */
+    public static void reportTeams() {
+        Modelo modelo = new Modelo();
+        try {
+            JasperDesign design = JRXmlLoader.load("src/main/resources/teams.jrxml");
+            JasperReport report = JasperCompileManager.compileReport(design);
+            JasperPrint print = JasperFillManager.fillReport(report, null, modelo.conexion());
+            JasperViewer.viewReport(print, false);
+        } catch (JRException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
