@@ -4,12 +4,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -246,10 +244,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     updatePlayerTeam();
                 }
                 break;
-                case "btnDeletePlayerTeam":
-                    modelo.deletePlayerTeam(Integer.parseInt(vista.tablePlayerTeam.getValueAt(vista.tablePlayerTeam.getSelectedRow(), 0).toString()));
-                    updatePlayerTeam();
-                    break;
+            case "btnDeletePlayerTeam":
+                modelo.deletePlayerTeam(Integer.parseInt(vista.tablePlayerTeam.getValueAt(vista.tablePlayerTeam.getSelectedRow(), 0).toString()));
+                updatePlayerTeam();
+                break;
             case "btnAddTeamTournament":
                 if (vista.comboTeam.getSelectedIndex() == -1) {
                     Herramientas.showErrorAlert("Selecciona un equipo");
@@ -260,10 +258,18 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     updateTeamTournament();
                 }
                 break;
-                case "btnDeleteTeamTournament":
-                    modelo.deleteTeamTournament(Integer.parseInt(vista.tableTeamTournament.getValueAt(vista.tableTeamTournament.getSelectedRow(), 0).toString()));
-                    updateTeamTournament();
-                    break;
+            case "btnDeleteTeamTournament":
+                modelo.deleteTeamTournament(Integer.parseInt(vista.tableTeamTournament.getValueAt(vista.tableTeamTournament.getSelectedRow(), 0).toString()));
+                updateTeamTournament();
+                break;
+            case "ListarJugadores":
+                Jasper.reportPlayers();
+                break;
+            case "ListarEquipos":
+                System.out.println("Entro listar jugadores");
+                Jasper.reportTeams();
+                break;
+
         }
 
     }
@@ -336,6 +342,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     private void addActionListeners(Controlador controlador) {
         vista.conexionItem.addActionListener(controlador);
         vista.salirItem.addActionListener(controlador);
+        vista.listarJugadoresItem.addActionListener(controlador);
+        vista.listarEquiposItem.addActionListener(controlador);
         vista.btnAddTeam.addActionListener(controlador);
         vista.btnAddPrize.addActionListener(controlador);
         vista.btnAddTeamTournament.addActionListener(controlador);
@@ -435,6 +443,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         }
 
     }
+
     /**
      * Update the team tournament
      */
@@ -445,8 +454,6 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             e.printStackTrace();
         }
     }
-
-
 
 
     /**
@@ -608,6 +615,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
 
     /**
      * Build the DTM for Player Team
+     *
      * @param rs
      * @return
      * @throws SQLException
@@ -627,6 +635,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
 
     /**
      * Build the DTM for the Team Tournament Table
+     *
      * @param rs
      * @return
      * @throws SQLException
@@ -643,6 +652,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         vista.dtmTeamTournament.setDataVector(data, columnNames);
         return vista.dtmTeamTournament;
     }
+
     /**
      * Refresh the tables
      *
@@ -660,8 +670,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             data.add(vector);
         }
     }
+
     /**
      * Muestra los atributos de un objeto seleccionado y los borra una vez se deselecciona
+     *
      * @param e Evento producido en una lista
      */
 
@@ -798,7 +810,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                             clearFieldTeam();
                         }
                     }
-                }else {
+                } else {
                     vista.btnDelPlayerTeam.setEnabled(false);
                 }
             }
@@ -825,7 +837,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                             clearFieldTeam();
                         }
                     }
-                }else {
+                } else {
                     vista.btnDeleteTeamTournament.setEnabled(false);
                 }
             }

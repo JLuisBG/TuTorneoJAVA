@@ -60,20 +60,27 @@ public class Vista extends JFrame {
     //
     JMenuItem conexionItem;
     JMenuItem salirItem;
+    JMenuItem listarJugadoresItem;
+    JMenuItem listarEquiposItem;
 
-
+    /**
+     * Constructor de la clase Vista
+     */
     public Vista() {
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        this.setSize(new Dimension(this.getWidth() +150, this.getHeight()+200));
+        this.setSize(new Dimension(this.getWidth() + 150, this.getHeight() + 200));
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         createMenu();
         setTableModels();
     }
 
+    /**
+     * Este método me crea el menú de la ventana principal
+     */
     private void createMenu() {
         JMenuBar barra = new JMenuBar();
         JMenu menu = new JMenu("Archivo");
@@ -84,12 +91,23 @@ public class Vista extends JFrame {
         salirItem = new JMenuItem("Salir");
         salirItem.setActionCommand("Salir");
 
+        listarJugadoresItem = new JMenuItem("Listar Jugadores");
+        listarJugadoresItem.setActionCommand("ListarJugadores");
+
+        listarEquiposItem = new JMenuItem("Listar Equipos");
+        listarEquiposItem.setActionCommand("ListarEquipos");
+
         menu.add(conexionItem);
         menu.add(salirItem);
+        menu.add(listarJugadoresItem);
+        menu.add(listarEquiposItem);
         barra.add(menu);
         this.setJMenuBar(barra);
     }
 
+    /**
+     * Este método me crea los modelos de las tablas
+     */
     private void setTableModels() {
         this.dtmPrize = new DefaultTableModel();
         this.tablePrize.setModel(dtmPrize);

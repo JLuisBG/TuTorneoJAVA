@@ -63,6 +63,35 @@ public class Modelo {
             }
         }
     }
+
+    public Connection  conexion(){
+
+        try {
+            conexion = DriverManager.getConnection(
+                    "jdbc:mysql://"+ip+":3306/tutorneo",user, password);
+
+        } catch (SQLException sqle) {
+            try {
+                conexion = DriverManager.getConnection(
+                        "jdbc:mysql://"+ip+":3306/",user, password);
+
+                PreparedStatement statement = null;
+
+                String code = leerFichero();
+                String[] query = code.split("--");
+                for (String aQuery : query) {
+                    statement = conexion.prepareStatement(aQuery);
+                    statement.executeUpdate();
+                }
+                assert statement != null;
+                statement.close();
+
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return conexion;
+    }
     /**
      * Conecta la base de datos
      */
