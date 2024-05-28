@@ -25,6 +25,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     private boolean update;
     private FileInputStream fin;
     private boolean isAdmin;
+    private Jasper jasper;
 
     /**
      * Constructor de la clase Controlador
@@ -38,6 +39,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         this.login = login;
         this.conectado = true;
         this.isAdmin = false;
+        this.jasper = new Jasper();
         vista.btnAddPlayerTeam.setEnabled(false);
         vista.btnDeleteTeamTournament.setEnabled(false);
         vista.btnDelPlayerTeam.setEnabled(false);
@@ -263,10 +265,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 updateTeamTournament();
                 break;
             case "ListarJugadores":
-                Jasper.reportPlayers();
+                jasper.reportPlayers();
                 break;
             case "ListarEquipos":
-                Jasper.reportTeams();
+                jasper.reportTeams();
                 break;
 
             case "btnLogin":

@@ -47,16 +47,16 @@ public class Modelo {
     private void getPropValues() {
         InputStream inputStream = null;
         try {
-            Properties prop = new Properties();
-            String propFileName = "config.properties";
+           // Properties prop = new Properties();
+           // String propFileName = "config.properties";
 
-            inputStream = new FileInputStream(propFileName);
+            //inputStream = new FileInputStream(propFileName);
 
-            prop.load(inputStream);
-            ip = prop.getProperty("ip");
-            user = prop.getProperty("user");
-            password = prop.getProperty("pass");
-            adminPassword = prop.getProperty("admin");
+            //prop.load(inputStream);
+            ip = "localhost";
+            user = "root";
+            password = "";
+            adminPassword = "1234";
 
         } catch (Exception e) {
             System.out.println("Exception: " + e);
@@ -850,7 +850,7 @@ public class Modelo {
 
             // Copiar el archivo desde el flujo de entrada al archivo en la carpeta de descargas
             Files.copy(is, rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
-            Herramientas.showErrorAlert("El archivo se ha descargado correctamente en la carpeta de descargas.");
+            Herramientas.mensajeExitoso("El archivo se ha descargado correctamente en la carpeta de descargas.");
         } else {
             Herramientas.showErrorAlert("No se encontró ningún examen con el ID proporcionado.");
         }
