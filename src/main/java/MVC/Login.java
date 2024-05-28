@@ -16,7 +16,7 @@ public class Login extends JFrame {
     JLabel logo;
     JLabel Pass;
 
-    JMenuItem salirItem;
+    JMenuItem salirItemLogin;
 
     /**
      * Este es el constructor de la clase Login
@@ -44,9 +44,9 @@ public class Login extends JFrame {
     private void crearMenu() {
         JMenuBar barra = new JMenuBar();
         JMenu menu = new JMenu("Archivo");
-        salirItem = new JMenuItem("Salir");
-        salirItem.setActionCommand("Salir");
-        menu.add(salirItem);
+        salirItemLogin = new JMenuItem("Salir");
+        salirItemLogin.setActionCommand("SalirLogin");
+        menu.add(salirItemLogin);
         barra.add(menu);
         this.setJMenuBar(barra);
     }

@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Vector;
@@ -65,6 +66,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
 
         switch (comando) {
             case "Salir":
+            case "SalirLogin":
                 modelo.desconectar();
                 System.exit(0);
                 break;
@@ -132,8 +134,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 updatePrize();
                 break;
             case "btnDelPlayer":
-                modelo.deletePlayer(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
                 modelo.deletePlayerTeam(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
+                modelo.deletePlayer(Integer.parseInt(vista.tablePlayer.getValueAt(vista.tablePlayer.getSelectedRow(), 0).toString()));
                 clearFieldPlayer();
                 updatePlayer();
                 break;
@@ -168,8 +170,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                     try {
                         fin = new FileInputStream(selectorFichero.getSelectedFile());
                     } catch (FileNotFoundException ex) {
+                        Herramientas.showInfoAlert("La imagen no fue importada correctamente");
                         throw new RuntimeException(ex);
                     }
+                    Herramientas.mensajeExitoso("Imagen importada correctamente");
                 }
                 break;
             case "btnAddTeam":
@@ -195,9 +199,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 updateTeam();
                 break;
             case "btnDelTeam":
-                modelo.deleteTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
                 modelo.deleteTeamPlayer(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
                 modelo.deleteTeamTournament(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
+                modelo.deleteTeam(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
                 clearFieldTeam();
                 updateTeam();
                 break;
@@ -213,8 +217,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 updateTournament();
                 break;
             case "btnDelTournament":
-                modelo.deleteTournament(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
                 modelo.deleteTournamentTeam(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
+                modelo.deleteTournament(Integer.parseInt(vista.tableTournament.getValueAt(vista.tableTournament.getSelectedRow(), 0).toString()));
                 clearFieldTournament();
                 updateTournament();
                 break;
@@ -265,15 +269,23 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                 Jasper.reportTeams();
                 break;
 
-                case "btnLogin":
+            case "btnLogin":
                 if (modelo.comprobarAdmin(login.txtEmailLogin.getText(), login.passfieldLogin.getPassword())) {
-                     loginAsAdmin();
-                }else if(modelo.comprobarUsuario(login.txtEmailLogin.getText(), login.passfieldLogin.getPassword())){
+                    loginAsAdmin();
+                } else if (modelo.comprobarUsuario(login.txtEmailLogin.getText(), login.passfieldLogin.getPassword())) {
                     loginAsUser();
-                }
-                else {
+                } else {
                     Herramientas.showWarningAlert("Usuario o contraseña incorrectos");
                 }
+                break;
+                case "btnExportLogo":
+                    try {
+                        modelo.descargarArchivo(Integer.parseInt(vista.tableTeam.getValueAt(vista.tableTeam.getSelectedRow(), 0).toString()));
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     break;
 
         }
@@ -367,7 +379,9 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         vista.btnModTournament.addActionListener(controlador);
         vista.btnModTeam.addActionListener(controlador);
         vista.btnImportLogo.addActionListener(controlador);
+        vista.btnExportLogo.addActionListener(controlador);
         login.btnLogin.addActionListener(controlador);
+        login.salirItemLogin.addActionListener(controlador);
 
     }
 
@@ -511,9 +525,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             vista.comboPlayers.removeAllItems();
             for (int i = 0; i < vista.dtmPlayer.getRowCount(); i++) {
                 vista.comboPlayers.addItem(vista.dtmPlayer.getValueAt(i, 0) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 6) + "-"
-                        + vista.dtmPlayer.getValueAt(0, 7));
-
+                        + vista.dtmPlayer.getValueAt(i, 6) + "-"
+                        + vista.dtmPlayer.getValueAt(i, 7));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -754,6 +767,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         int row = vista.tableTeam.getSelectedRow();
                         vista.txtTeamName.setText(String.valueOf(vista.tableTeam.getValueAt(row, 1)));
                         updatePlayerTeam();
+                        vista.btnExportLogo.setVisible(true);
                     } else if (e.getValueIsAdjusting()
                             && ((ListSelectionModel) e.getSource()).isSelectionEmpty() && !update) {
                         if (e.getSource().equals(vista.tablePrize.getSelectionModel())) {
@@ -764,8 +778,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                             clearFieldTournament();
                         }
                     }
+                }else {
+                    vista.btnExportLogo.setVisible(false);
                 }
-                if(isAdmin){
+                if (isAdmin) {
                     vista.btnAddPlayerTeam.setEnabled(true);
                 }
 
@@ -810,7 +826,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                     if (e.getSource().equals(vista.tablePlayerTeam.getSelectionModel())) {
                         int row = vista.tablePlayerTeam.getSelectedRow();
-                        if(isAdmin) {
+                        if (isAdmin) {
                             vista.btnDelPlayerTeam.setEnabled(true);
                         }
                     } else if (e.getValueIsAdjusting()
@@ -839,7 +855,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
                         && !((ListSelectionModel) e.getSource()).isSelectionEmpty()) {
                     if (e.getSource().equals(vista.tableTeamTournament.getSelectionModel())) {
                         int row = vista.tableTeamTournament.getSelectedRow();
-                        if(isAdmin){
+                        if (isAdmin) {
                             vista.btnDeleteTeamTournament.setEnabled(true);
                         }
                     } else if (e.getValueIsAdjusting()
@@ -911,17 +927,17 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
             }
         }
     }
+
     /**
      * Limpiar los campos de login
-     *
      */
-    public void clearFieldLogin(){
+    public void clearFieldLogin() {
         login.txtEmailLogin.setText("");
         login.passfieldLogin.setText("");
     }
- /**
+
+    /**
      * Método que se encarga de procesar los eventos para logearse como administrador
-     *
      */
     public void loginAsAdmin() {
         login.setVisible(false);
@@ -935,7 +951,7 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
     /**
      * Método que se encarga de procesar los eventos para logearse como usuario
      */
-    public void loginAsUser(){
+    public void loginAsUser() {
         this.isAdmin = false;
         login.setVisible(false);
         vista.setVisible(true);
@@ -945,9 +961,10 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
 
     /**
      * Método que se encarga de procesar los eventos para logearse
+     *
      * @param state
      */
-    public void setEnabledAllButtons(boolean state){
+    public void setEnabledAllButtons(boolean state) {
         vista.btnAddTeam.setEnabled(state);
         vista.btnAddPrize.setEnabled(state);
         vista.btnAddTournament.setEnabled(state);
@@ -955,7 +972,8 @@ public class Controlador implements ActionListener, ItemListener, ListSelectionL
         vista.btnDelPlayer.setEnabled(state);
         vista.btnDelPrize.setEnabled(state);
         vista.btnDelTournametn.setEnabled(state);
-        vista.btnDelTeam.setEnabled(state);;
+        vista.btnDelTeam.setEnabled(state);
+        ;
         vista.btnModPlayer.setEnabled(state);
         vista.btnModPrize.setEnabled(state);
         vista.btnModTournament.setEnabled(state);

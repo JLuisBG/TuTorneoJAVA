@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-05-2024 a las 19:17:41
+-- Tiempo de generación: 27-05-2024 a las 20:17:47
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `tutorneo`
 --
+
+DELIMITER $$
+--
+-- Funciones
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `CheckAdminExists` (`email` VARCHAR(50), `pass` VARCHAR(256)) RETURNS TINYINT(1)  BEGIN
+    DECLARE adminExists BOOLEAN;
+
+    SELECT COUNT(*)
+    INTO adminExists
+    FROM admin
+    WHERE admin.email = email AND admin.pass = pass;
+
+    RETURN adminExists > 0;
+END$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `CheckUserExists` (`email` VARCHAR(50), `pass` VARCHAR(256)) RETURNS TINYINT(1)  BEGIN
+    DECLARE userExists BOOLEAN;
+
+    SELECT COUNT(*)
+    INTO userExists
+    FROM players
+    WHERE players.email = email AND players.pass = pass;
+
+    RETURN userExists > 0;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 

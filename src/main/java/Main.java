@@ -15,7 +15,6 @@ public class Main {
         Modelo modelo = new Modelo();
         Login login = new Login();
         Controlador controlador = new Controlador(vista, modelo,login);
-        //Login login = new Login();
 
     }
 }

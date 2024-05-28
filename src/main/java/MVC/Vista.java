@@ -49,6 +49,7 @@ public class Vista extends JFrame {
     public JTable tablePlayerTeam;
     public JTable tableTeamTournament;
     public JTable tableTournament;
+    public JButton btnExportLogo;
 
     //default table model
     DefaultTableModel dtmPrize;
@@ -71,6 +72,7 @@ public class Vista extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(false);//TODO: Cuidado visibilidad
+        this.btnExportLogo.setVisible(false);
         this.setSize(new Dimension(this.getWidth() + 150, this.getHeight() + 200));
         this.setLocationRelativeTo(null);
         this.setResizable(false);

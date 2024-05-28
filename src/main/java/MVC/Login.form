@@ -29,7 +29,7 @@
         </constraints>
         <properties>
           <foreground color="-855310"/>
-          <text value="Email"/>
+          <text value="Usuario o Email"/>
         </properties>
       </component>
       <component id="61af3" class="javax.swing.JTextField" binding="txtEmailLogin">
@@ -75,7 +75,7 @@
         <properties>
           <actionCommand value="btnLogin"/>
           <background color="-16709850"/>
-          <foreground color="-8947572"/>
+          <foreground color="-855310"/>
           <text value="Iniciar"/>
         </properties>
       </component>

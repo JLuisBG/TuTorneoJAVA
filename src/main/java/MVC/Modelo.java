@@ -3,6 +3,10 @@ import BBDD.*;
 
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -16,7 +20,7 @@ public class Modelo {
     private String user;
     private String password;
     private String adminPassword;
-
+    private final String NOMBRE_ARCHIVO = "logo.png";
 
 
     public String getIp() {
@@ -511,6 +515,23 @@ public class Modelo {
     }
 
     /**
+     * Añade un equipo
+     * @param name
+     */
+    public ResultSet getTeamLogo(int id){
+        String sentenciaSql = "SELECT logo FROM team where id = ?";
+        PreparedStatement sentencia = null;
+        ResultSet resultado = null;
+        try {
+            sentencia = conexion.prepareStatement(sentenciaSql);
+            resultado = sentencia.executeQuery();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return resultado;
+    }
+
+    /**
      * Modifica un equipo
      * @param id
      * @param nameText
@@ -770,8 +791,8 @@ public class Modelo {
     public boolean comprobarAdmin(String email, char[] password) {
         String checkAdmin = "SELECT CheckAdminExists(?,?)";
         String pass = Herramientas.getSha256(Arrays.toString(password));
-        System.out.println("email: "+email);
-        System.out.println("pass: "+pass);
+        //System.out.println("email: "+email);
+        //System.out.println("pass: "+pass);
         PreparedStatement function;
         boolean nameExists = false;
         try {
@@ -805,5 +826,33 @@ public class Modelo {
             e.printStackTrace();
         }
         return nameExists;
+    }
+
+    /**
+     * Descarga un archivo de la base de datos
+     * @param id
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void descargarArchivo(int id) throws SQLException, IOException {
+        String consultaSQL = "SELECT logo FROM team WHERE id = ?";
+        PreparedStatement statement = conexion.prepareStatement(consultaSQL);
+        statement.setInt(1, id);
+        ResultSet resultado = statement.executeQuery();
+
+        if (resultado.next()) {
+            Blob blob = resultado.getBlob("logo");
+            InputStream is = blob.getBinaryStream();
+
+            // Carpeta de descargas del usuario
+            String carpetaDescargas = System.getProperty("user.home") + "/Downloads/";
+            Path rutaArchivo = Paths.get(carpetaDescargas + NOMBRE_ARCHIVO);
+
+            // Copiar el archivo desde el flujo de entrada al archivo en la carpeta de descargas
+            Files.copy(is, rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+            Herramientas.showErrorAlert("El archivo se ha descargado correctamente en la carpeta de descargas.");
+        } else {
+            Herramientas.showErrorAlert("No se encontró ningún examen con el ID proporcionado.");
+        }
     }
 }
